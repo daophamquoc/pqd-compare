@@ -1,0 +1,2393 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PQD Drawing Comparison - So sánh bản vẽ PDF</title>
+<meta name="theme-color" content="#3b82f6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+--font-main: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+--font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+--bg-app: #f4f6fa;
+--bg-sidebar: rgba(255, 255, 255, 0.94);
+--bg-card: #ffffff;
+--bg-card-sub: #f8fafc;
+--bg-stage: #0a0e17;
+--bg-glass: rgba(255, 255, 255, 0.88);
+--fg-primary: #0f172a;
+--fg-secondary: #475569;
+--fg-muted: #94a3b8;
+--border-light: rgba(226, 232, 240, 0.9);
+--border-glass: rgba(255, 255, 255, 0.6);
+--primary: #2563eb;
+--primary-hover: #1d4ed8;
+--primary-glow: rgba(37, 99, 235, 0.25);
+--primary-fg: #ffffff;
+--old-color: #ef4444;
+--new-color: #10b981;
+--same-color: #94a3b8;
+--cloud-color: #d946ef;
+--cloud-fg: #ffffff;
+--radius-xs: 6px;
+--radius-sm: 8px;
+--radius-md: 12px;
+--radius-lg: 16px;
+--radius-pill: 9999px;
+--shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
+--shadow-float: 0 12px 32px -4px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+--shadow-glow: 0 0 20px var(--primary-glow);
+}
+[data-theme="dark"] {
+--bg-app: #080c14;
+--bg-sidebar: rgba(15, 23, 42, 0.94);
+--bg-card: #131d31;
+--bg-card-sub: #0d1525;
+--bg-stage: #05070d;
+--bg-glass: rgba(19, 29, 49, 0.88);
+--fg-primary: #f8fafc;
+--fg-secondary: #cbd5e1;
+--fg-muted: #64748b;
+--border-light: rgba(36, 50, 78, 0.8);
+--border-glass: rgba(255, 255, 255, 0.08);
+--primary: #3b82f6;
+--primary-hover: #60a5fa;
+--primary-glow: rgba(59, 130, 246, 0.35);
+--primary-fg: #070d1e;
+--old-color: #f87171;
+--new-color: #34d399;
+--same-color: #64748b;
+--cloud-color: #f472b6;
+--cloud-fg: #1e051c;
+color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; padding: 0; }
+body {
+background: var(--bg-app);
+color: var(--fg-primary);
+font-family: var(--font-main);
+font-size: 13.5px;
+line-height: 1.5;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+user-select: none;
+-webkit-font-smoothing: antialiased;
+}
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.stitch-topbar {
+background: var(--bg-glass);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+border-bottom: 1px solid var(--border-light);
+height: 52px;
+padding: 0 16px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 12px;
+z-index: 20;
+flex: none;
+}
+.brand-wrapper { display: flex; align-items: center; gap: 12px; }
+.brand-icon {
+width: 32px;
+height: 32px;
+background: linear-gradient(135deg, #2563eb, #10b981);
+border-radius: var(--radius-sm);
+display: grid;
+place-items: center;
+box-shadow: 0 2px 8px var(--primary-glow);
+flex: none;
+}
+.brand-icon svg { width: 18px; height: 18px; color: #ffffff; }
+.brand-title {
+margin: 0;
+font-size: 15px;
+font-weight: 700;
+letter-spacing: -0.01em;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.brand-badge {
+font-family: var(--font-mono);
+font-size: 10px;
+font-weight: 600;
+padding: 2px 6px;
+border-radius: var(--radius-pill);
+background: rgba(37, 99, 235, 0.12);
+color: var(--primary);
+border: 1px solid rgba(37, 99, 235, 0.25);
+text-transform: uppercase;
+}
+.privacy-pill {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: 11.5px;
+color: var(--fg-secondary);
+background: var(--bg-card-sub);
+padding: 4px 10px;
+border-radius: var(--radius-pill);
+border: 1px solid var(--border-light);
+}
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+padding: 6px 12px;
+border: 1px solid var(--border-light);
+background: var(--bg-card);
+border-radius: var(--radius-sm);
+cursor: pointer;
+font-size: 12.5px;
+font-weight: 600;
+min-height: 32px;
+transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+color: var(--fg-primary);
+box-shadow: var(--shadow-subtle);
+}
+.btn:hover {
+border-color: var(--primary);
+background: color-mix(in srgb, var(--primary) 6%, var(--bg-card));
+transform: translateY(-1px);
+}
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+.btn.primary, .btn[aria-pressed="true"] {
+background: var(--primary);
+color: var(--primary-fg);
+border-color: var(--primary);
+box-shadow: 0 4px 12px var(--primary-glow);
+}
+.btn.primary:hover {
+background: var(--primary-hover);
+border-color: var(--primary-hover);
+}
+.btn.icon-only { width: 32px; height: 32px; padding: 0; border-radius: var(--radius-sm); }
+.btn.pill { border-radius: var(--radius-pill); }
+.btn.danger { color: var(--old-color); }
+.btn.danger:hover { background: color-mix(in srgb, var(--old-color) 10%, var(--bg-card)); border-color: var(--old-color); }
+select {
+border: 1px solid var(--border-light);
+background: var(--bg-card);
+border-radius: var(--radius-sm);
+padding: 4px 8px;
+min-height: 32px;
+font-size: 12.5px;
+color: var(--fg-primary);
+cursor: pointer;
+}
+.stitch-workspace {
+display: grid;
+grid-template-columns: 360px minmax(0, 1fr);
+flex: 1;
+min-height: 0;
+position: relative;
+overflow: hidden;
+transition: grid-template-columns 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stitch-workspace.sidebar-collapsed { grid-template-columns: 0px minmax(0, 1fr); }
+.stitch-sidebar {
+background: var(--bg-sidebar);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+border-right: 1px solid var(--border-light);
+display: flex;
+flex-direction: column;
+overflow-y: auto;
+overflow-x: hidden;
+padding: 14px;
+gap: 12px;
+min-width: 360px;
+z-index: 15;
+}
+.stitch-card {
+background: var(--bg-card);
+border: 1px solid var(--border-light);
+border-radius: var(--radius-md);
+padding: 12px 14px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+box-shadow: var(--shadow-subtle);
+transition: border-color 0.2s;
+}
+.stitch-card:focus-within { border-color: var(--primary); }
+.card-title {
+margin: 0;
+font-size: 12px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+color: var(--fg-muted);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.file-slot {
+border: 1.5px dashed var(--border-light);
+border-radius: var(--radius-sm);
+padding: 10px 12px;
+background: var(--bg-card-sub);
+display: flex;
+flex-direction: column;
+gap: 6px;
+transition: all 0.2s ease;
+}
+.file-slot.drag {
+border-color: var(--primary);
+background: color-mix(in srgb, var(--primary) 10%, var(--bg-card));
+box-shadow: var(--shadow-glow);
+}
+.file-slot.has-file { border-style: solid; border-color: var(--border-light); }
+.slot-header { display: flex; align-items: center; justify-content: space-between; }
+.slot-tag {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-weight: 700;
+font-size: 11.5px;
+font-family: var(--font-mono);
+text-transform: uppercase;
+}
+.badge-tag {
+width: 20px;
+height: 20px;
+border-radius: 4px;
+display: grid;
+place-items: center;
+color: #fff;
+font-size: 11px;
+}
+.badge-tag.A { background: var(--old-color); }
+.badge-tag.B { background: var(--new-color); }
+.file-name {
+font-weight: 600;
+font-size: 13px;
+color: var(--fg-primary);
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+.file-slot.is-empty .file-name { color: var(--fg-muted); font-weight: 500; font-style: italic; }
+.file-meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--fg-muted); }
+.nudge-panel { display: flex; align-items: center; gap: 12px; }
+.nudge-dpad {
+display: grid;
+grid-template-columns: repeat(3, 34px);
+grid-template-rows: repeat(3, 30px);
+gap: 3px;
+}
+.nudge-dpad button {
+border: 1px solid var(--border-light);
+background: var(--bg-card);
+border-radius: var(--radius-xs);
+cursor: pointer;
+padding: 0;
+display: grid;
+place-items: center;
+font-weight: 700;
+font-size: 11px;
+transition: all 0.15s;
+}
+.nudge-dpad button:hover { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+.nudge-core {
+display: grid;
+place-items: center;
+font-family: var(--font-mono);
+font-weight: 700;
+font-size: 11px;
+color: var(--new-color);
+background: color-mix(in srgb, var(--new-color) 14%, transparent);
+border-radius: 4px;
+}
+.change-container { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; }
+.filter-pills {
+display: flex;
+background: var(--bg-card-sub);
+padding: 2px;
+border-radius: var(--radius-sm);
+border: 1px solid var(--border-light);
+}
+.filter-pills button {
+flex: 1;
+border: 0;
+background: transparent;
+padding: 4px 8px;
+font-size: 11.5px;
+font-weight: 600;
+border-radius: var(--radius-xs);
+cursor: pointer;
+color: var(--fg-secondary);
+transition: all 0.15s;
+}
+.filter-pills button[aria-selected="true"] {
+background: var(--bg-card);
+color: var(--primary);
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.change-list {
+list-style: none;
+margin: 0;
+padding: 0;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 5px;
+max-height: min(44vh, 380px);
+}
+.change-card {
+display: grid;
+grid-template-columns: auto minmax(0, 1fr);
+gap: 2px 10px;
+padding: 8px 10px;
+background: var(--bg-card);
+border: 1px solid var(--border-light);
+border-radius: var(--radius-sm);
+cursor: pointer;
+transition: all 0.15s ease;
+}
+.change-card:hover {
+border-color: var(--cloud-color);
+background: color-mix(in srgb, var(--cloud-color) 6%, var(--bg-card));
+transform: translateX(2px);
+}
+.change-card[aria-current="true"] {
+border-color: var(--cloud-color);
+background: color-mix(in srgb, var(--cloud-color) 14%, var(--bg-card));
+box-shadow: 0 0 0 1.5px var(--cloud-color);
+}
+.change-num {
+grid-row: span 2;
+align-self: center;
+min-width: 24px;
+height: 24px;
+border-radius: 12px;
+background: var(--cloud-color);
+color: var(--cloud-fg);
+display: grid;
+place-items: center;
+font-family: var(--font-mono);
+font-weight: 700;
+font-size: 11px;
+}
+.change-text {
+font-family: var(--font-mono);
+font-size: 11.5px;
+font-weight: 600;
+overflow-wrap: anywhere;
+}
+.change-text s { color: var(--old-color); }
+.change-text b { color: var(--new-color); font-weight: 700; }
+.change-text em { color: var(--fg-muted); font-style: normal; font-weight: 400; }
+.change-coord {
+font-family: var(--font-mono);
+font-size: 10px;
+color: var(--fg-muted);
+display: flex;
+justify-content: space-between;
+}
+.stitch-stage {
+position: relative;
+display: flex;
+flex-direction: column;
+background: var(--bg-stage);
+min-width: 0;
+min-height: 0;
+overflow: hidden;
+}
+.viewport-canvas {
+flex: 1;
+position: relative;
+overflow: hidden;
+touch-action: none;
+cursor: grab;
+outline: none;
+}
+.viewport-canvas.grabbing { cursor: grabbing; }
+.viewport-canvas.pinning, .viewport-canvas.drawing { cursor: crosshair; }
+.change-note { font-size: 11.5px; color: var(--fg-secondary); margin-top: 3px; white-space: pre-wrap; word-break: break-word; }
+.note-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 12px; margin-top: 4px; padding: 4px 6px; }
+.note-edit { border: 0; background: none; color: var(--primary); cursor: pointer; font-size: 12px; padding: 0 2px; }
+#clouds .cnote { font-family: inherit; font-weight: 600; }
+#snapMark .draft { fill: none; stroke: var(--cloud-color); stroke-width: 2px; stroke-dasharray: 6 4; vector-effect: non-scaling-stroke; }
+#clouds .pin { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
+#clouds .pinA { stroke: #ef4444; } #clouds .pinB { stroke: #10b981; }
+#clouds .pinT { font-family: var(--font-mono); font-weight: 700; paint-order: stroke; stroke: #fff; stroke-width: 3px; vector-effect: non-scaling-stroke; }
+#sheet {
+position: absolute;
+left: 0;
+top: 0;
+transform-origin: 0 0;
+background: #ffffff;
+box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+will-change: transform;
+visibility: hidden;
+}
+#cv { display: block; }
+#cvSwipe { position: absolute; left: 0; top: 0; display: block; pointer-events: none; }
+#dv { position: absolute; display: block; pointer-events: none; background: #ffffff; }
+#clouds, #snapMark { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.cl {
+fill: none;
+stroke: var(--cloud-color);
+stroke-width: 2.5px;
+vector-effect: non-scaling-stroke;
+stroke-linejoin: round;
+}
+.cl.sel { stroke-width: 4.5px; filter: drop-shadow(0 0 4px var(--cloud-color)); }
+.cn {
+fill: var(--cloud-color);
+font-family: var(--font-mono);
+font-weight: 700;
+stroke: #ffffff;
+stroke-width: 3px;
+paint-order: stroke;
+vector-effect: non-scaling-stroke;
+}
+.floating-top-bar {
+position: absolute;
+top: 14px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 10;
+background: var(--bg-glass);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+border: 1px solid var(--border-glass);
+border-radius: var(--radius-pill);
+padding: 4px 8px;
+display: flex;
+align-items: center;
+gap: 8px;
+box-shadow: var(--shadow-float);
+}
+.stitch-seg {
+display: inline-flex;
+background: var(--bg-card-sub);
+padding: 3px;
+border-radius: var(--radius-pill);
+}
+.stitch-seg button {
+border: 0;
+background: transparent;
+padding: 5px 14px;
+font-size: 12px;
+font-weight: 600;
+border-radius: var(--radius-pill);
+cursor: pointer;
+color: var(--fg-secondary);
+transition: all 0.15s ease;
+}
+.stitch-seg button[aria-pressed="true"] {
+background: var(--primary);
+color: var(--primary-fg);
+box-shadow: 0 2px 8px var(--primary-glow);
+}
+.floating-hud {
+position: absolute;
+bottom: 20px;
+right: 20px;
+z-index: 10;
+background: var(--bg-glass);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+border: 1px solid var(--border-glass);
+border-radius: var(--radius-md);
+padding: 4px;
+display: flex;
+align-items: center;
+gap: 4px;
+box-shadow: var(--shadow-float);
+}
+.floating-hud .btn {
+padding: 4px 10px;
+min-height: 28px;
+border: 0;
+background: transparent;
+box-shadow: none;
+}
+.floating-hud .btn:hover { background: rgba(0, 0, 0, 0.08); }
+[data-theme="dark"] .floating-hud .btn:hover { background: rgba(255, 255, 255, 0.12); }
+.sidebar-toggle-btn {
+position: absolute;
+top: 14px;
+left: 14px;
+z-index: 10;
+background: var(--bg-glass);
+backdrop-filter: blur(16px);
+border: 1px solid var(--border-glass);
+border-radius: var(--radius-sm);
+width: 34px;
+height: 34px;
+display: grid;
+place-items: center;
+box-shadow: var(--shadow-float);
+cursor: pointer;
+}
+.swipe-bar {
+position: absolute;
+top: 0;
+bottom: 0;
+width: 2.5px;
+background: var(--primary);
+cursor: ew-resize;
+z-index: 8;
+touch-action: none;
+display: none;
+box-shadow: 0 0 10px var(--primary);
+}
+.swipe-handle {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 34px;
+height: 34px;
+border-radius: 50%;
+background: var(--primary);
+color: #fff;
+display: grid;
+place-items: center;
+font-size: 13px;
+font-weight: 700;
+box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+border: 2px solid #ffffff;
+}
+.stitch-statusbar {
+background: var(--bg-glass);
+backdrop-filter: blur(12px);
+border-top: 1px solid var(--border-light);
+height: 28px;
+padding: 0 16px;
+font-family: var(--font-mono);
+font-size: 11px;
+color: var(--fg-muted);
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex: none;
+z-index: 10;
+}
+.stitch-overlay {
+position: absolute;
+inset: 0;
+display: grid;
+place-items: center;
+padding: 24px;
+background: rgba(10, 14, 23, 0.75);
+backdrop-filter: blur(4px);
+z-index: 12;
+}
+.welcome-box {
+background: var(--bg-card);
+border: 1px solid var(--border-glass);
+border-radius: var(--radius-lg);
+padding: 28px 32px;
+max-width: 480px;
+display: flex;
+flex-direction: column;
+gap: 14px;
+align-items: center;
+text-align: center;
+box-shadow: var(--shadow-float);
+}
+.welcome-box h3 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+.welcome-box p { margin: 0; color: var(--fg-secondary); font-size: 13.5px; }
+.spin {
+width: 28px;
+height: 28px;
+border-radius: 50%;
+border: 3px solid var(--border-light);
+border-top-color: var(--primary);
+animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.drop-hint {
+position: absolute;
+inset: 12px;
+border: 2px dashed var(--primary);
+border-radius: var(--radius-lg);
+background: color-mix(in srgb, var(--primary) 12%, transparent);
+display: grid;
+place-items: center;
+font-size: 18px;
+font-weight: 700;
+color: var(--primary);
+z-index: 30;
+pointer-events: none;
+backdrop-filter: blur(3px);
+}
+.toast {
+position: fixed;
+left: 50%;
+bottom: 32px;
+transform: translateX(-50%) translateY(20px);
+background: var(--fg-primary);
+color: var(--bg-app);
+padding: 10px 20px;
+border-radius: var(--radius-pill);
+font-size: 13px;
+font-weight: 600;
+box-shadow: var(--shadow-float);
+opacity: 0;
+pointer-events: none;
+transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+z-index: 100;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (max-width: 900px) {
+.stitch-workspace { display: flex; flex-direction: column; overflow: auto; }
+.stitch-stage { height: 60vh; min-height: 340px; order: -1; }
+.stitch-sidebar { min-width: 100%; border-right: 0; border-top: 1px solid var(--border-light); }
+.floating-top-bar { max-width: 95vw; overflow-x: auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="stitch-topbar">
+<div class="brand-wrapper">
+<div class="brand-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<polyline points="14 2 14 8 20 8"></polyline>
+<line x1="16" y1="13" x2="8" y2="13"></line>
+<line x1="16" y1="17" x2="8" y2="17"></line>
+</svg>
+</div>
+<div class="brand-title">
+<span>PQD Drawing Comparison</span>
+<span class="brand-badge">Apps Script</span>
+</div>
+<div class="privacy-pill">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+<span>PDF xử lý ngay trên trình duyệt</span>
+</div>
+</div>
+<div class="top-actions">
+<button class="btn icon-only" id="themeBtn" title="Chuyển giao diện Sáng / Tối">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+</button>
+</div>
+</header>
+<main class="stitch-workspace" id="workspace">
+<aside class="stitch-sidebar">
+<section class="stitch-card">
+<div class="card-title">
+<span>Bản vẽ so sánh</span>
+<button class="btn icon-only" id="swapBtn" title="Đảo vị trí bản vẽ Cũ ⇄ Mới" style="width:26px;height:26px">⇅</button>
+</div>
+<div class="file-slot is-empty" id="slotA" data-k="A">
+<div class="slot-header">
+<span class="slot-tag"><span class="badge-tag A">A</span> Bản cũ</span>
+<select aria-label="Page" hidden></select>
+</div>
+<div class="file-name">Kéo thả tệp PDF vào đây</div>
+<div class="file-meta"></div>
+<label class="btn pill" style="width:fit-content;margin-top:2px">
+<input type="file" accept="application/pdf,.pdf" hidden> Chọn tệp PDF
+</label>
+</div>
+<div class="file-slot is-empty" id="slotB" data-k="B">
+<div class="slot-header">
+<span class="slot-tag"><span class="badge-tag B">B</span> Bản mới</span>
+<select aria-label="Page" hidden></select>
+</div>
+<div class="file-name">Kéo thả tệp PDF vào đây</div>
+<div class="file-meta"></div>
+<label class="btn pill" style="width:fit-content;margin-top:2px">
+<input type="file" accept="application/pdf,.pdf" hidden> Chọn tệp PDF
+</label>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="flowBox" hidden>
+<button class="btn primary pill" id="goBtn">⚡ So sánh ngay</button>
+<button class="btn danger pill" id="resetBtn">Làm mới</button>
+</div>
+</section>
+<section class="stitch-card">
+<div class="card-title"><span>Độ nét & Tinh chỉnh</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px">
+<span>Làm đậm nét thay đổi</span>
+<output id="boostO" style="font-family:var(--font-mono);color:var(--primary);font-weight:600">+1 px</output>
+</div>
+<input id="boost" type="range" min="0" max="4" step="1" value="1" style="accent-color:var(--primary)">
+<div style="display:flex;flex-direction:column;gap:4px">
+<label for="res" style="font-size:12px;font-weight:600;color:var(--fg-secondary)">Độ phân giải xử lý:</label>
+<select id="res">
+<option value="3000">Nhanh (3000 px) - Tiết kiệm RAM</option>
+<option value="4500" selected>Cân bằng (4500 px) - Khuyên dùng</option>
+<option value="6000">Chi tiết cao (6000 px)</option>
+<option value="7500">Siêu nét (7500 px) - PC cấu hình cao</option>
+</select>
+</div>
+</section>
+<section class="stitch-card">
+<div class="card-title">
+<span>Căn chỉnh lệch tọa độ</span>
+<span id="offO" style="font-family:var(--font-mono);font-size:11px;color:var(--primary)">0, 0 px</span>
+</div>
+<div class="nudge-panel">
+<div class="nudge-dpad" id="nudgeGrid">
+<span></span><button type="button" data-d="0,-1" title="Lên">▲</button><span></span>
+<button type="button" data-d="-1,0" title="Trái">◀</button><div class="nudge-core">B</div><button type="button" data-d="1,0" title="Phải">▶</button>
+<span></span><button type="button" data-d="0,1" title="Xuống">▼</button><span></span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;flex:1">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:12px">Bước dịch:</span>
+<select id="nstep" style="min-height:26px;padding:2px 6px">
+<option value="1">1 px</option>
+<option value="3" selected>3 px</option>
+<option value="10">10 px</option>
+<option value="30">30 px</option>
+</select>
+</div>
+<div style="display:gap;gap:4px;display:flex">
+<button class="btn pill" id="autoAlignBtn" style="flex:1">Tự căn chỉnh</button>
+<button class="btn pill" id="zeroAlignBtn" title="Đặt lại 0">Về 0</button>
+</div>
+</div>
+</div>
+<button class="btn pill" id="pinBtn" title="Chọn 3 điểm trên bản cũ, rồi 3 điểm tương ứng trên bản mới">📌 Căn bằng 3 điểm pin</button>
+<p id="pinHint" style="margin:0;font-size:11.5px;color:var(--fg-muted)" hidden></p>
+</section>
+<section class="stitch-card change-container">
+<div class="card-title">
+<span>Vị trí sai khác</span>
+<span id="chgCount" style="font-family:var(--font-mono);color:var(--cloud-color);font-weight:700"></span>
+</div>
+<div style="display:flex;gap:6px">
+<button class="btn pill" id="cloudBtn" aria-pressed="false" style="flex:1">☁ Hiện mây sửa đổi</button>
+<button class="btn pill" id="drawBtn" aria-pressed="false" title="Kéo chuột trên bản vẽ để tạo mây và ghi chú (Esc để thoát)">✏ Vẽ mây</button>
+<button class="btn danger pill" id="uncloudBtn" disabled title="Xóa mây đang chọn (Phím Delete)">✕ Xóa</button>
+<button class="btn pill" id="uncloudUndo" hidden title="Hoàn tác (Ctrl+Z)">↶</button>
+</div>
+<div class="filter-pills" role="tablist">
+<button type="button" data-filter="all" aria-selected="true">Tất cả</button>
+<button type="button" data-filter="text" aria-selected="false">Văn bản</button>
+<button type="button" data-filter="line" aria-selected="false">Nét vẽ</button>
+</div>
+<ul class="change-list" id="changeList"></ul>
+<p style="margin:0;font-size:11px;color:var(--fg-muted)" id="listNote"></p>
+</section>
+</aside>
+<section class="stitch-stage">
+<button class="sidebar-toggle-btn" id="sidebarToggle" title="Ẩn / Hiện thanh công cụ">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+<line x1="9" y1="3" x2="9" y2="21"></line>
+</svg>
+</button>
+<div class="floating-top-bar">
+<div class="stitch-seg" id="modeGroup">
+<button type="button" data-mode="diff" aria-pressed="true">So sánh (Diff)</button>
+<button type="button" data-mode="overlay" aria-pressed="false">Hòa trộn (Blend)</button>
+<button type="button" data-mode="swipe" aria-pressed="false">Trượt (Swipe)</button>
+<button type="button" data-mode="A" aria-pressed="false">Bản cũ</button>
+<button type="button" data-mode="B" aria-pressed="false">Bản mới</button>
+</div>
+<div id="mixWrap" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--fg-muted)" hidden>
+<span>A</span><input id="mixSlider" type="range" min="0" max="100" value="50" style="width:100px;accent-color:var(--primary)"><span>B</span>
+</div>
+<div style="display:flex;gap:4px">
+<button class="btn primary pill" id="dlPdfBtn" hidden title="Xuất PDF">⬇ Xuất PDF</button>
+<button class="btn pill" id="saveDriveBtn" hidden title="Lưu PDF so sánh vào Google Drive, thư mục PQD (tự xóa sau 24 giờ)" style="color:var(--primary)">☁ Lưu Drive</button>
+<button class="btn pill" id="dlPngBtn" hidden title="Lưu ảnh PNG">📷 PNG</button>
+</div>
+</div>
+<div class="viewport-canvas" id="viewport" tabindex="0">
+<div id="sheet">
+<canvas id="cv"></canvas>
+<canvas id="cvSwipe" hidden></canvas>
+<canvas id="dv" hidden></canvas>
+<svg id="clouds" aria-hidden="true"></svg>
+<svg id="snapMark" aria-hidden="true"></svg>
+</div>
+<div class="swipe-bar" id="swipeBar"><div class="swipe-handle">⇄</div></div>
+<div class="stitch-overlay" id="emptyState">
+<div class="welcome-box">
+<div style="width:48px;height:48px;border-radius:12px;background:rgba(37,99,235,0.1);color:var(--primary);display:grid;place-items:center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+</div>
+<h3 id="emptyTitle">Chọn 2 bản vẽ PDF để bắt đầu</h3>
+<p id="emptySub">Kéo thả 2 tệp PDF vào đây hoặc chọn từ bảng bên trái. App so từng nét vẽ và chữ giữa hai bản.</p>
+<button class="btn primary pill" id="startSampleBtn">✨ Thử với bản vẽ mẫu tầng 25</button>
+</div>
+</div>
+<div class="stitch-overlay" id="busyState" hidden>
+<div class="welcome-box" style="padding:20px 28px">
+<i class="spin"></i>
+<span id="busyMessage" style="font-weight:700">Đang phân tích nét vẽ...</span>
+</div>
+</div>
+<div class="drop-hint" id="dropHint" hidden>Thả các tệp PDF vào đây để so sánh</div>
+</div>
+<div class="floating-hud">
+<span id="pgNav" style="display:none">
+<button class="btn" id="pgPrevBtn" title="Trang trước cả A và B (PageUp)">▲</button>
+<span id="pgLbl" style="font-family:var(--font-mono);font-size:12px;font-weight:600;align-self:center;padding:0 4px;white-space:nowrap"></span>
+<button class="btn" id="pgNextBtn" title="Trang sau cả A và B (PageDown)">▼</button>
+</span>
+<button class="btn" id="rotLeftBtn" title="Xoay trái (R)">↺</button>
+<button class="btn" id="rotRightBtn" title="Xoay phải">↻</button>
+<button class="btn" id="zoomOutBtn" title="Thu nhỏ (-)">−</button>
+<button class="btn" id="zoomFitBtn" title="Vừa màn hình (0)">Fit</button>
+<button class="btn" id="zoom100Btn" title="100% (1)">1:1</button>
+<button class="btn" id="zoomInBtn" title="Phóng to (+)">+</button>
+</div>
+<footer class="stitch-statusbar">
+<div style="display:flex;gap:14px;align-items:center" id="mainStatus"></div>
+<div id="dstat" style="color:var(--primary);font-weight:600"></div>
+</footer>
+</section>
+</main>
+<div class="toast" id="toastBox" role="status" aria-live="polite"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+/* Never use double-slash line comments or a double slash anywhere in this script: Apps Script HtmlService strips everything from a double slash to end of line, even inside strings, which breaks the whole page. */
+
+const PAL = { old:'#ef4444', nw:'#10b981' };
+const hex = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+
+function boxDilate(src, W, H, r){
+if(!r) return src;
+const N = W * H, hor = new Uint8Array(N), out = new Uint8Array(N), p = new Int32Array(W + 1);
+for(let y = 0; y < H; y++){
+const o = y * W;
+for(let x = 0; x < W; x++) p[x+1] = p[x] + src[o+x];
+for(let x = 0; x < W; x++){
+const a = x - r < 0 ? 0 : x - r, b = x + r + 1 > W ? W : x + r + 1;
+hor[o+x] = p[b] - p[a] > 0 ? 1 : 0;
+}
+}
+const cnt = new Int32Array(W);
+for(let y = 0; y <= r && y < H; y++){ const o = y * W; for(let x = 0; x < W; x++) cnt[x] += hor[o+x]; }
+for(let y = 0; y < H; y++){
+const o = y * W;
+for(let x = 0; x < W; x++) out[o+x] = cnt[x] > 0 ? 1 : 0;
+const add = y + r + 1, sub = y - r;
+if(add < H){ const q = add * W; for(let x = 0; x < W; x++) cnt[x] += hor[q+x]; }
+if(sub >= 0){ const q = sub * W; for(let x = 0; x < W; x++) cnt[x] -= hor[q+x]; }
+}
+return out;
+}
+
+function diffText(A, B, dx, dy, tm, tp){
+const idx = new Map();
+for(const b of B){ b.used = false; let l = idx.get(b.s); if(!l){ l = []; idx.set(b.s, l); } l.push(b); }
+const ua = [];
+for(const a of A){
+const l = idx.get(a.s); let hit = null, best = tm;
+if(l) for(const b of l){
+if(b.used) continue;
+const bx = b.x + dx, by = b.y + dy;
+if(Math.abs(a.x - bx) < best && Math.abs(a.y - by) < best){
+const d = Math.hypot(a.x - bx, a.y - by);
+if(d < best){ best = d; hit = b; }
+}
+}
+if(hit) hit.used = true; else ua.push(a);
+}
+const ub = B.filter(b => !b.used);
+const pairs = [];
+if(ua.length * ub.length <= 4e6){
+for(let i = 0; i < ua.length; i++) for(let j = 0; j < ub.length; j++){
+const bx = ub[j].x + dx, by = ub[j].y + dy;
+if(Math.abs(ua[i].x - bx) < tp && Math.abs(ua[i].y - by) < tp){
+const d = Math.hypot(ua[i].x - bx, ua[i].y - by);
+if(d < tp) pairs.push([d, i, j]);
+}
+}
+pairs.sort((p, q) => p[0] - q[0]);
+}
+const ta = new Uint8Array(ua.length), tb = new Uint8Array(ub.length), out = [];
+for(const [d, i, j] of pairs){
+if(ta[i] || tb[j]) continue;
+ta[i] = tb[j] = 1;
+out.push({ type:'changed', a:ua[i], b:ub[j], x:ub[j].x + dx, y:ub[j].y + dy, w:ub[j].w, h:ub[j].h });
+}
+ua.forEach((a, i) => { if(!ta[i]) out.push({ type:'removed', a:a, b:null, x:a.x, y:a.y, w:a.w, h:a.h }); });
+ub.forEach((b, j) => { if(!tb[j]) out.push({ type:'added', a:null, b:b, x:b.x + dx, y:b.y + dy, w:b.w, h:b.h }); });
+const rank = { changed:0, added:1, removed:2 };
+out.sort((p, q) => rank[p.type] - rank[q.type] || p.y - q.y || p.x - q.x);
+return out;
+}
+
+function diffMasks(ia, ib, da, db, N){
+const oldM = new Uint8Array(N), newM = new Uint8Array(N);
+let cOld = 0, cNew = 0, ink = 0;
+for(let i = 0; i < N; i++){
+const a = ia[i], b = ib[i];
+if(a){ ink++; if(!(b || db[i])){ oldM[i] = 1; cOld++; } }
+else if(b){ ink++; if(!da[i]){ newM[i] = 1; cNew++; } }
+}
+return { oldM, newM, cOld, cNew, ink };
+}
+
+function clusterDiffs(oldM, newM, W, H, f, rr, minPx){
+const gw = Math.ceil(W / f), gh = Math.ceil(H / f), G = new Uint8Array(gw * gh);
+for(let y = 0; y < H; y++){
+const o = y * W, go = ((y / f) | 0) * gw;
+for(let x = 0; x < W; x++) if(oldM[o+x] | newM[o+x]) G[go + ((x / f) | 0)] = 1;
+}
+const D = boxDilate(G, gw, gh, rr), lab = new Int32Array(gw * gh), comps = [], stack = [];
+for(let i = 0; i < gw * gh; i++){
+if(!D[i] || lab[i]) continue;
+const id = comps.length + 1; lab[i] = id; stack.length = 0; stack.push(i);
+while(stack.length){
+const c = stack.pop(), cx = c % gw, cy = (c / gw) | 0;
+for(let dy = -1; dy <= 1; dy++){
+const ny = cy + dy; if(ny < 0 || ny >= gh) continue;
+for(let dx = -1; dx <= 1; dx++){
+const nx = cx + dx; if(nx < 0 || nx >= gw) continue;
+const j = ny * gw + nx;
+if(D[j] && !lab[j]){ lab[j] = id; stack.push(j); }
+}
+}
+}
+comps.push({ x0:1e9, y0:1e9, x1:-1, y1:-1, n:0 });
+}
+for(let y = 0; y < H; y++){
+const o = y * W, go = ((y / f) | 0) * gw;
+for(let x = 0; x < W; x++){
+if(!(oldM[o+x] | newM[o+x])) continue;
+const c = comps[lab[go + ((x / f) | 0)] - 1];
+if(x < c.x0) c.x0 = x; if(x > c.x1) c.x1 = x;
+if(y < c.y0) c.y0 = y; if(y > c.y1) c.y1 = y;
+c.n++;
+}
+}
+return comps.filter(c => c.n >= minPx).map(c => ({ x:c.x0, y:c.y0, w:c.x1 - c.x0 + 1, h:c.y1 - c.y0 + 1, n:c.n }));
+}
+
+function cloudPath(x, y, w, h, L){
+const nx = Math.max(2, Math.round(w / L)), ny = Math.max(2, Math.round(h / L)), sx = w / nx, sy = h / ny;
+const f = n => Math.round(n * 100) / 100, arc = (px, py, s) => ' A' + f(s * 0.55) + ' ' + f(s * 0.55) + ' 0 0 1 ' + f(px) + ' ' + f(py);
+let d = 'M' + f(x) + ' ' + f(y), i;
+for(i = 1; i <= nx; i++) d += arc(x + sx * i, y, sx);
+for(i = 1; i <= ny; i++) d += arc(x + w, y + sy * i, sy);
+for(i = 1; i <= nx; i++) d += arc(x + w - sx * i, y + h, sx);
+for(i = 1; i <= ny; i++) d += arc(x, y + h - sy * i, sy);
+return d + 'Z';
+}
+
+function composePixels(P){
+const W = P.W, H = P.H, N = W * H;
+const img = P.img || new ImageData(W, H), px = new Uint32Array(img.data.buffer);
+const [or, og, ob] = hex(PAL.old), [nr, ng, nb] = hex(PAL.nw);
+const pack = (r, g, b) => ((255 << 24) | (b << 16) | (g << 8) | r);
+const oldC = pack(or, og, ob), newC = pack(nr, ng, nb);
+
+if(P.mode === 'overlay'){
+const t = P.mix / 100, wA = Math.min(1, 2 * (1 - t)), wB = Math.min(1, 2 * t), a = P.gA, b = P.gB;
+for(let i = 0; i < N; i++){
+const da = Math.min(1, (255 - a[i]) / 255 * 1.8) * wA, db = Math.min(1, (255 - b[i]) / 255 * 1.8) * wB;
+const r = 255 * (1 - da * (1 - or / 255)) * (1 - db * (1 - nr / 255));
+const g = 255 * (1 - da * (1 - og / 255)) * (1 - db * (1 - ng / 255));
+const bl = 255 * (1 - da * (1 - ob / 255)) * (1 - db * (1 - nb / 255));
+px[i] = pack(r | 0, g | 0, bl | 0);
+}
+return { img, stats:null };
+}
+
+const op = P.com / 100, ch = v => Math.round(255 - op * (255 - v)), comC = pack(ch(34), ch(40), ch(52)), paper = pack(255, 255, 255);
+let ia = P.inkA, ib = P.inkB, m = P.masks;
+if(!ia){
+ia = new Uint8Array(N); ib = new Uint8Array(N);
+const a = P.gA, b = P.gB, t = P.thr;
+for(let i = 0; i < N; i++){ ia[i] = a[i] < t ? 1 : 0; ib[i] = b[i] < t ? 1 : 0; }
+}
+if(!m) m = diffMasks(ia, ib, P.dilA || boxDilate(ia, W, H, P.tol), P.dilB || boxDilate(ib, W, H, P.tol), N);
+const oldM = m.oldM, newM = m.newM;
+
+for(let i = 0; i < N; i++){
+if(oldM[i] | newM[i]) px[i] = paper;
+else if(ia[i] | ib[i]) px[i] = comC;
+else px[i] = paper;
+}
+if(P.boost > 0){
+const dO = boxDilate(oldM, W, H, P.boost), dN = boxDilate(newM, W, H, P.boost);
+for(let i = 0; i < N; i++){ if(dN[i]) px[i] = newC; if(dO[i]) px[i] = oldC; }
+} else {
+for(let i = 0; i < N; i++){ if(newM[i]) px[i] = newC; if(oldM[i]) px[i] = oldC; }
+}
+return { img, stats:{ old:m.cOld, nw:m.cNew, ink:m.ink } };
+}
+
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const tick = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+const CONFIG = { thr:170, tol:2, com:35 };
+const fmtInt = n => Math.round(n).toLocaleString('en-US');
+
+const S = {
+slots: { A:null, B:null },
+maxPx: 4500, boost: 1, mode: 'diff', mix: 50, swipePos: 50, L: null, pin: null, manual: {}, drawing: false, editing: -1, regTag: null, cloud: false, started: false,
+dx: 0, dy: 0, nstep: 3, W: 0, H: 0, s: 1, filter: 'all',
+cvA: null, cvB: null, gA: null, gB0: null, gB: null,
+inkA: null, inkB: null, dilA: null, dilB: null, masks: null, img: null, ctx: null,
+textDiffs: [], regions: [], sel: -1, stats: null, ready: false, fitted: false, refit: false, removed: []
+};
+
+function demoSpec(B){
+const xm = B ? 448 : 420, doorY = B ? 236 : 300, T = [];
+const t = (s, x, y, size) => T.push({ s, x, y, size });
+t(String((xm - 150) * 10), (150 + xm) / 2 - 16, 86, 11);
+t(String((780 - xm) * 10), (xm + 780) / 2 - 16, 86, 11);
+t('6 300', 450 - 16, 62, 11);
+t('Phòng khách', 215, 250, 12);
+t('Khu bếp', (xm + 780) / 2 - 10, 250, 12);
+t('Phòng ngủ Master', 250, 520, 12);
+t(B ? 'Tủ âm tường' : 'Kho để đồ', B ? 618 : 640, 520, 12);
+t('D1', xm + 44, doorY + 4, 10);
+t('MẶT BẰNG KIẾN TRÚC TẦNG 25', 870, 744, 12);
+t('Tỉ lệ: 1:50 | Dự án PQD', 870, 766, 11);
+t('Phiên bản: ' + (B ? 'Rev B (Phê duyệt)' : 'Rev A (Sơ bộ)'), 1070, 808, 12);
+if(!B) t('Chờ xác nhận kết cấu', 170, 596, 10);
+if(B) t('Đã khớp chi tiết TOC-30006', 520, 664, 10);
+return { xm, doorY, T, B };
+}
+
+function drawDemo(ctx, B){
+const sp = demoSpec(B), xm = sp.xm, dY = sp.doorY;
+const ln = (x1, y1, x2, y2, w) => { ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
+ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 1191, 842);
+ctx.strokeStyle = '#1e293b'; ctx.fillStyle = '#1e293b';
+ctx.strokeRect(20, 20, 1151, 802);
+ctx.fillStyle = '#fffbeb'; ctx.fillRect(158, 128, xm - 158, 272);
+ctx.fillStyle = '#eff6ff'; ctx.fillRect(158, 408, 442, 204);
+
+ctx.strokeStyle = '#1e293b';
+ctx.strokeRect(150, 120, 630, 500); ctx.lineWidth = 1; ctx.strokeRect(158, 128, 614, 484);
+ln(xm, 128, xm, dY - 22, 2.5); ln(xm + 8, 128, xm + 8, dY - 22, 2.5);
+ln(xm, dY + 22, xm, 400, 2.5); ln(xm + 8, dY + 22, xm + 8, 400, 2.5);
+ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(xm + 8, dY + 22, 44, -Math.PI / 2, 0); ctx.stroke(); ln(xm + 8, dY + 22, xm + 8, dY - 22, 0.8);
+ln(158, 400, 772, 400, 2.5); ln(158, 408, 772, 408, 2.5);
+ln(600, 408, 600, 612, 2.5); ln(608, 408, 608, 612, 2.5);
+
+if(B){
+ctx.lineWidth = 1;
+for(const o of [0, 4, 8]) ln(772 + o, 180, 772 + o, 260, 1);
+ln(772, 180, 780, 180, 1); ln(772, 260, 780, 260, 1);
+}
+ctx.lineWidth = 0.8;
+ln(150, 90, 780, 90, 0.8); ln(150, 66, 780, 66, 0.8);
+for(const x of [150, xm, 780]){ ln(x, 80, x, 112, 0.6); ln(x - 4, 94, x + 4, 86, 1.4); }
+for(const x of [150, 780]){ ln(x, 56, x, 72, 0.6); ln(x - 4, 70, x + 4, 62, 1.4); }
+ctx.setLineDash([10, 4, 2, 4]); ctx.strokeStyle = '#dc2626'; ln(150, 40, 150, 700, 0.7); ln(780, 40, 780, 700, 0.7); ctx.setLineDash([]);
+ctx.strokeStyle = '#dc2626';
+for(const [x, l] of [[150, 'A'], [780, 'B']]){
+ctx.beginPath(); ctx.arc(x, 34, 9, 0, 7); ctx.stroke();
+ctx.fillStyle = '#dc2626'; ctx.font = '700 11px sans-serif'; ctx.fillText(l, x - 3.5, 38);
+}
+ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1.2; ctx.strokeRect(860, 690, 311, 132);
+ln(860, 730, 1171, 730, 0.8); ln(860, 780, 1171, 780, 0.8); ln(1050, 780, 1050, 822, 0.8);
+ctx.fillStyle = '#0f172a';
+for(const it of sp.T){ ctx.font = `${it.size}px "JetBrains Mono",monospace`; ctx.fillText(it.s, it.x, it.y); }
+}
+
+function makeDemo(k){
+const B = k === 'B', sp = demoSpec(B);
+return {
+k, name: B ? 'BanVe_L25_RevB.pdf' : 'BanVe_L25_RevA.pdf',
+kind: 'demo', numPages: 1, pageNum: 1, wPt: 1191, hPt: 842,
+draw: ctx => drawDemo(ctx, B),
+items: sp.T.map(i => ({ s:i.s, x:i.x, y:i.y - i.size, w:i.s.length * i.size * 0.6, h:i.size }))
+};
+}
+
+async function extractItems(page){
+const vp = page.getViewport({ scale:1 }), tc = await page.getTextContent(), items = [];
+for(const it of tc.items){
+if(!it.str) continue;
+const s = it.str.replace(/\s+/g, ' ').trim(); if(!s) continue;
+const t = it.transform, e = t[4], f = t[5];
+const al = Math.hypot(t[0], t[1]) || 1, hl = Math.hypot(t[2], t[3]) || 1;
+const w = Math.abs(it.width) || 0, h = Math.abs(it.height) || hl;
+const p0 = vp.convertToViewportPoint(e, f);
+const p1 = vp.convertToViewportPoint(e + t[0] / al * w, f + t[1] / al * w);
+const p2 = vp.convertToViewportPoint(e + t[2] / hl * h, f + t[3] / hl * h);
+const xs = [p0[0], p1[0], p2[0], p1[0] + p2[0] - p0[0]], ys = [p0[1], p1[1], p2[1], p1[1] + p2[1] - p0[1]];
+const x = Math.min(...xs), y = Math.min(...ys);
+items.push({ s, x, y, w:Math.max(...xs) - x, h:Math.max(...ys) - y });
+}
+return items;
+}
+
+/* Old PDF docs are destroyed only when no render is running, so heavy files don't pile up in RAM. */
+const docTrash = [];
+function dropDoc(sl){ if(sl && sl.doc) docTrash.push(sl.doc); if(!running) flushDocs(); }
+function flushDocs(){ while(docTrash.length){ try{ docTrash.pop().destroy(); }catch(e){} } }
+
+async function setPage(sl, n){
+const prev = sl.page;
+sl.pageNum = n; sl.page = await sl.doc.getPage(n); sl.snap = null;
+if(prev && prev !== sl.page) prev.cleanup();
+const vp = sl.page.getViewport({ scale:1 }); sl.wPt = vp.width; sl.hPt = vp.height;
+sl.items = await extractItems(sl.page);
+}
+
+function afterSlotChange(){
+renderSlots();
+if(S.started){ S.refit = true; S.dx = 0; S.dy = 0; S.L = null; updOff(); request(0); }
+else updateFlow();
+}
+
+async function loadFile(k, file){
+if(!window.pdfjsLib){ showToast('Lỗi: thư viện PDF chưa tải xong.'); return; }
+busy('Đang tải: ' + file.name + '…'); await tick();
+try{
+const buf = await file.arrayBuffer();
+const doc = await pdfjsLib.getDocument({ data:new Uint8Array(buf), isEvalSupported:false }).promise;
+const sl = { k, name:file.name, kind:'pdf', doc, numPages:doc.numPages, pageNum:1, sizeBytes:file.size };
+await setPage(sl, 1);
+dropDoc(S.slots[k]);
+S.slots[k] = sl; S.manual = {};
+const o = k === 'A' ? 'B' : 'A';
+if(S.slots[o] && S.slots[o].kind === 'demo') S.slots[o] = null;
+}catch(err){
+showToast(err && err.name === 'PasswordException' ? 'Bản vẽ có mật khẩu, không mở được.' : 'Lỗi mở tệp: ' + (err && err.message || err));
+}
+busy(false); afterSlotChange();
+}
+
+async function changePage(k, n){
+const sl = S.slots[k]; busy('Mở trang ' + n + '…'); await tick();
+try{ await setPage(sl, n); }catch(err){ showToast('Lỗi đọc trang: ' + err.message); }
+busy(false); afterSlotChange();
+}
+
+let pgBusy = false;
+async function stepPages(d){
+if(pgBusy) return;
+const todo = ['A', 'B'].map(k => S.slots[k]).filter(sl => sl && sl.kind === 'pdf' && clamp(sl.pageNum + d, 1, sl.numPages) !== sl.pageNum);
+if(!todo.length){ showToast(d > 0 ? 'Đã ở trang cuối' : 'Đã ở trang đầu'); return; }
+pgBusy = true; busy('Chuyển trang…'); await tick();
+try{ for(const sl of todo) await setPage(sl, sl.pageNum + d); }
+catch(err){ showToast('Lỗi đọc trang: ' + err.message); }
+finally{ pgBusy = false; }
+busy(false); afterSlotChange();
+}
+
+function renderPageNav(){
+const A = S.slots.A, B = S.slots.B, multi = [A, B].some(sl => sl && sl.numPages > 1);
+document.getElementById('pgNav').style.display = multi ? 'contents' : 'none';
+if(!multi) return;
+const pa = A ? A.pageNum + '/' + A.numPages : '–', pb = B ? B.pageNum + '/' + B.numPages : '–';
+document.getElementById('pgLbl').textContent = pa === pb ? 'Tr. ' + pa : 'A ' + pa + ' · B ' + pb;
+}
+
+async function pickFiles(files, target){
+const pdfs = [...files].filter(f => /pdf$/i.test(f.type) || /\.pdf$/i.test(f.name));
+if(!pdfs.length){ showToast('Chỉ nhận tệp PDF.'); return; }
+if(target){ await loadFile(target, pdfs[0]); return; }
+if(pdfs.length >= 2){
+let [a, b] = pdfs;
+const isNew = /(new|moi|v2|rev[-_ ]?[b-z1-9]|sau)/i.test(a.name);
+const isOld = /(old|cu|v1|rev[-_ ]?[a0]|truoc)/i.test(b.name);
+if(isNew && isOld) [a, b] = [b, a];
+await loadFile('A', a); await loadFile('B', b); return;
+}
+const real = S.slots.A && S.slots.A.kind === 'pdf';
+await loadFile(real && !(S.slots.B && S.slots.B.kind === 'pdf') ? 'B' : 'A', pdfs[0]);
+}
+
+let running = false, pending = null;
+function request(level){ pending = pending == null ? level : Math.min(pending, level); if(!running) run(); }
+
+async function run(){
+running = true;
+try{ while(pending != null){ const lv = pending; pending = null; await execute(lv); } }
+catch(err){ console.error(err); busy(false); showToast('Lỗi: ' + (err && err.message || err) + ' — PDF nặng: thử chọn Độ phân giải "Nhanh (3000 px)".'); }
+finally{ running = false; flushDocs(); }
+}
+
+function grayOf(cv, W, H){
+const g = new Uint8Array(W * H).fill(255), w = cv.width, h = cv.height;
+const d = cv.getContext('2d').getImageData(0, 0, w, h).data;
+for(let y = 0; y < h; y++){
+let o = y * W, p = y * w * 4;
+for(let x = 0; x < w; x++, p += 4, o++) g[o] = (d[p] * 77 + d[p+1] * 150 + d[p+2] * 29) >> 8;
+}
+return g;
+}
+
+async function drawSlot(sl, s){
+const cv = document.createElement('canvas');
+cv.width = Math.max(1, Math.ceil(sl.wPt * s)); cv.height = Math.max(1, Math.ceil(sl.hPt * s));
+const ctx = cv.getContext('2d', { willReadFrequently:true });
+ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, cv.width, cv.height);
+if(sl.kind === 'demo'){ ctx.save(); ctx.scale(s, s); sl.draw(ctx); ctx.restore(); }
+else await sl.page.render({ canvasContext:ctx, viewport:sl.page.getViewport({ scale:s }) }).promise;
+return cv;
+}
+
+async function execute(lv){
+const A = S.slots.A, B = S.slots.B;
+if(!S.started || !A || !B){ S.ready = false; showEmpty(); return; }
+document.getElementById('emptyState').hidden = true;
+document.getElementById('sheet').style.visibility = 'visible';
+hideDetail();
+
+if(lv <= 0){
+if(S.pin){ S.pin = null; updPinUI(); } /* pins are in old sheet px; a re-render invalidates them */
+const s = S.maxPx / Math.max(A.wPt, A.hPt, B.wPt, B.hPt);
+S.s = s; S.W = Math.ceil(Math.max(A.wPt, B.wPt) * s); S.H = Math.ceil(Math.max(A.hPt, B.hPt) * s);
+busy('Đang vẽ bản cũ (A)…'); await tick();
+S.cvA = await drawSlot(A, s); S.gA = grayOf(S.cvA, S.W, S.H);
+busy('Đang vẽ bản mới (B)…'); await tick();
+S.cvB = await drawSlot(B, s); S.gB0 = grayOf(S.cvB, S.W, S.H);
+S.gB = new Uint8Array(S.W * S.H);
+
+const cv = document.getElementById('cv'); cv.width = S.W; cv.height = S.H; S.ctx = cv.getContext('2d'); S.img = null;
+const cvSwipe = document.getElementById('cvSwipe'); cvSwipe.width = S.W; cvSwipe.height = S.H;
+const sh = document.getElementById('sheet'); sh.style.width = S.W + 'px'; sh.style.height = S.H + 'px';
+const sv = document.getElementById('clouds'); sv.setAttribute('width', S.W); sv.setAttribute('height', S.H);
+const sm = document.getElementById('snapMark'); sm.setAttribute('width', S.W); sm.setAttribute('height', S.H); sm.setAttribute('viewBox', '0 0 ' + S.W + ' ' + S.H); sm.innerHTML = '';
+sv.setAttribute('viewBox', '0 0 ' + S.W + ' ' + S.H);
+
+busy('So sánh chi tiết thay đổi…'); await tick();
+S.ready = true;
+if(!S.fitted || S.refit){ fitView(); S.fitted = true; S.refit = false; }
+}
+if(!S.ready) return;
+
+const W = S.W, H = S.H, N = W * H;
+if(lv <= 1){
+shiftB();
+S.inkA = new Uint8Array(N); S.inkB = new Uint8Array(N);
+const t = CONFIG.thr, a = S.gA, b = S.gB, ia = S.inkA, ib = S.inkB;
+for(let i = 0; i < N; i++){ ia[i] = a[i] < t ? 1 : 0; ib[i] = b[i] < t ? 1 : 0; }
+S.dilA = boxDilate(S.inkA, W, H, CONFIG.tol); S.dilB = boxDilate(S.inkB, W, H, CONFIG.tol);
+S.masks = diffMasks(S.inkA, S.inkB, S.dilA, S.dilB, N);
+runText(); buildRegions();
+}
+compose();
+busy(false);
+renderStatus(); renderClouds(); updDl();
+scheduleDetail(60);
+}
+
+/* B -> A sheet transform in canvas form [a,b,c,d,e,f]: x' = a x + c y + e, y' = b x + d y + f. */
+const matB = () => S.L ? [S.L[0], S.L[1], S.L[2], S.L[3], S.dx, S.dy] : [1, 0, 0, 1, S.dx, S.dy];
+const matMul = (P, Q) => [P[0]*Q[0] + P[2]*Q[1], P[1]*Q[0] + P[3]*Q[1], P[0]*Q[2] + P[2]*Q[3], P[1]*Q[2] + P[3]*Q[3], P[0]*Q[4] + P[2]*Q[5] + P[4], P[1]*Q[4] + P[3]*Q[5] + P[5]];
+const matApply = (M, p) => [M[0]*p[0] + M[2]*p[1] + M[4], M[1]*p[0] + M[3]*p[1] + M[5]];
+function matInv(M){
+const det = M[0]*M[3] - M[1]*M[2], a = M[3]/det, b = -M[1]/det, c = -M[2]/det, d = M[0]/det;
+return [a, b, c, d, -(a*M[4] + c*M[5]), -(b*M[4] + d*M[5])];
+}
+/* Exact affine mapping src[i] -> dst[i] for 3 point pairs; null if the points are (nearly) collinear. */
+function solveAffine(src, dst){
+const [[x1, y1], [x2, y2], [x3, y3]] = src;
+const det = x1*(y2 - y3) - y1*(x2 - x3) + (x2*y3 - x3*y2);
+const span = Math.max(Math.hypot(x2 - x1, y2 - y1), Math.hypot(x3 - x1, y3 - y1), 1);
+if(Math.abs(det) < span * span * 0.01) return null;
+const solve = (r1, r2, r3) => [
+(r1*(y2 - y3) - y1*(r2 - r3) + (r2*y3 - r3*y2)) / det,
+(x1*(r2 - r3) - r1*(x2 - x3) + (x2*r3 - x3*r2)) / det,
+(x1*(y2*r3 - y3*r2) - y1*(x2*r3 - x3*r2) + r1*(x2*y3 - x3*y2)) / det
+];
+const [a, c, e] = solve(dst[0][0], dst[1][0], dst[2][0]), [b, d, f] = solve(dst[0][1], dst[1][1], dst[2][1]);
+return [a, b, c, d, e, f];
+}
+function drawB(ctx){ ctx.save(); ctx.setTransform(...matB()); ctx.drawImage(S.cvB, 0, 0); ctx.restore(); }
+
+function shiftB(){
+const W = S.W, H = S.H, g0 = S.gB0, g = S.gB;
+if(S.L || !Number.isInteger(S.dx) || !Number.isInteger(S.dy)){
+const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+const c = cv.getContext('2d', { willReadFrequently:true });
+c.fillStyle = '#ffffff'; c.fillRect(0, 0, W, H); drawB(c);
+g.set(grayOf(cv, W, H)); return;
+}
+if(!S.dx && !S.dy){ g.set(g0); return; }
+g.fill(255);
+const x0 = Math.max(0, S.dx), x1 = Math.min(W, W + S.dx); if(x1 <= x0) return;
+for(let y = 0; y < H; y++){
+const sy = y - S.dy; if(sy < 0 || sy >= H) continue;
+const so = sy * W - S.dx;
+g.set(g0.subarray(so + x0, so + x1), y * W + x0);
+}
+}
+
+function compose(){
+const W = S.W, H = S.H, ctx = S.ctx;
+const cvSwipe = document.getElementById('cvSwipe');
+
+if(S.mode === 'A' || S.mode === 'B'){
+ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+if(S.mode === 'A') ctx.drawImage(S.cvA, 0, 0); else drawB(ctx);
+cvSwipe.hidden = true;
+S.stats = S.masks ? { old:S.masks.cOld, nw:S.masks.cNew, ink:S.masks.ink } : null; return;
+}
+
+if(S.mode === 'swipe'){
+ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+ctx.drawImage(S.cvA, 0, 0);
+const swCtx = cvSwipe.getContext('2d');
+swCtx.clearRect(0, 0, W, H);
+drawB(swCtx);
+cvSwipe.hidden = false;
+updateSwipeClip();
+return;
+}
+cvSwipe.hidden = true;
+
+if(!S.img || S.img.width !== W || S.img.height !== H) S.img = ctx.createImageData(W, H);
+const r = composePixels({
+W, H, img:S.img, gA:S.gA, gB:S.gB, inkA:S.inkA, inkB:S.inkB,
+dilA:S.dilA, dilB:S.dilB, masks:S.masks,
+tol:CONFIG.tol, thr:CONFIG.thr, com:CONFIG.com, boost:S.boost, mode:S.mode, mix:S.mix
+});
+ctx.putImageData(r.img, 0, 0); S.stats = r.stats;
+}
+
+function updateSwipeClip(){
+if(S.mode !== 'swipe') return;
+const cvSwipe = document.getElementById('cvSwipe');
+/* Bar is a vertical line fixed on screen; map it into sheet coords so B shows on its right at any rotation. */
+const screenX = document.getElementById('viewport').clientWidth * (S.swipePos / 100);
+const [sx, sy] = toSheet(screenX, 0), W = S.W, H = S.H, cx = clamp(sx, 0, W), cy = clamp(sy, 0, H);
+const box = [[cx, W, 0, H], [0, W, 0, cy], [0, cx, 0, H], [0, W, cy, H]][V.r];
+cvSwipe.style.clipPath = `polygon(${box[0]}px ${box[2]}px, ${box[1]}px ${box[2]}px, ${box[1]}px ${box[3]}px, ${box[0]}px ${box[3]}px)`;
+const swipeBar = document.getElementById('swipeBar');
+swipeBar.style.display = 'block';
+swipeBar.style.left = screenX + 'px';
+}
+
+function renderStatus(){
+const parts = [], mmpx = (25.4 / 72) / S.s;
+parts.push(`Kích thước: ${fmtInt(S.W)} × ${fmtInt(S.H)} px`);
+parts.push(`1 px ≈ ${mmpx.toFixed(2)} mm`);
+if(S.stats && S.stats.ink){
+const pct = (S.stats.old + S.stats.nw) / S.stats.ink * 100;
+parts.push(`Sai khác: ${pct.toFixed(1)}%`);
+}
+const box = document.getElementById('mainStatus'); box.innerHTML = '';
+for(const p of parts){ const sp = document.createElement('span'); sp.textContent = p; box.appendChild(sp); }
+}
+
+function runText(){
+const A = S.slots.A, B = S.slots.B, s = S.s;
+const sc = it => ({ s:it.s, x:it.x * s, y:it.y * s, w:it.w * s, h:it.h * s });
+const M = matB();
+const toA = it => { /* bbox of the B item after the B -> A transform */
+const c = [[it.x, it.y], [it.x + it.w, it.y], [it.x, it.y + it.h], [it.x + it.w, it.y + it.h]].map(p => matApply(M, p));
+const xs = c.map(p => p[0]), ys = c.map(p => p[1]), x = Math.min(...xs), y = Math.min(...ys);
+return { s:it.s, x, y, w:Math.max(...xs) - x, h:Math.max(...ys) - y };
+};
+const ia = A.items.map(sc), ib = B.items.map(sc).map(toA);
+S.textDiffs = diffText(ia, ib, 0, 0, 4 * s, 40 * s);
+}
+
+function buildRegions(){
+const W = S.W, H = S.H, f = Math.max(2, Math.round(W / 560)), rr = Math.max(2, Math.round(0.0142 * W / f));
+const minPx = Math.max(8, Math.round(15 * Math.pow(W / 4500, 2)));
+const regs = clusterDiffs(S.masks.oldM, S.masks.newM, W, H, f, rr, minPx);
+const band = H * 0.03;
+regs.sort((a, b) => Math.round(a.y / band) - Math.round(b.y / band) || a.x - b.x);
+const m = f * 3;
+for(const r of regs){
+const hit = S.textDiffs.filter(d => {
+const cx = d.x + d.w / 2, cy = d.y + d.h / 2;
+return cx >= r.x - m && cx <= r.x + r.w + m && cy >= r.y - m && cy <= r.y + r.h + m;
+});
+r.first = hit[0] || null; r.more = Math.max(0, hit.length - 1);
+r.isText = !!hit.length;
+}
+/* Keep notes typed on auto clouds when the same drawings are re-compared (nudge, pin, align). */
+const tag = [S.slots.A, S.slots.B, mKey(), S.s];
+const same = S.regTag && tag.every((v, i) => v === S.regTag[i]);
+const noted = same ? S.regions.filter(r => !r.manual && r.note) : [];
+for(const r of regs){
+const o = noted.find(o => { const cx = o.x + o.w / 2, cy = o.y + o.h / 2; return cx >= r.x && cx <= r.x + r.w && cy >= r.y && cy <= r.y + r.h; });
+if(o) r.note = o.note;
+}
+const s = S.s;
+for(const mr of manualList()){ mr.x = mr.u.x * s; mr.y = mr.u.y * s; mr.w = mr.u.w * s; mr.h = mr.u.h * s; regs.push(mr); }
+S.regTag = tag;
+S.regions = regs; S.removed = []; S.sel = -1; S.editing = -1; renderList();
+}
+
+const escXml = t => String(t).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' })[c]);
+const mKey = () => S.slots.A.pageNum + '|' + S.slots.B.pageNum;
+/* User clouds, per page pair, stored in page units so they survive resolution changes. */
+function manualList(){ const k = mKey(); return S.manual[k] || (S.manual[k] = []); }
+
+function addManualCloud(p0, p1){
+const x = Math.min(p0[0], p1[0]), y = Math.min(p0[1], p1[1]), w = Math.abs(p1[0] - p0[0]), h = Math.abs(p1[1] - p0[1]);
+if(w < 6 / V.k || h < 6 / V.k) return;
+const s = S.s, r = { manual:true, note:'', u:{ x:x / s, y:y / s, w:w / s, h:h / s }, x, y, w, h, n:0, first:null, more:0, isText:false };
+manualList().push(r); S.regions.push(r);
+S.sel = S.editing = S.regions.length - 1;
+renderList(); renderClouds();
+}
+
+function setDrawing(on){
+if(on && !S.ready){ showToast('Nhấn So sánh trước khi vẽ mây.'); return; }
+if(on && S.pin) cancelPin();
+S.drawing = on;
+document.getElementById('viewport').classList.toggle('drawing', on);
+document.getElementById('drawBtn').setAttribute('aria-pressed', String(on));
+if(!on) document.getElementById('snapMark').innerHTML = '';
+else showToast('Kéo chuột trên bản vẽ để tạo mây, rồi nhập ghi chú. Esc để thoát.');
+}
+
+function startNoteEdit(i){ S.editing = i; renderList(); }
+
+function renderList(){
+const ul = document.getElementById('changeList'); ul.innerHTML = '';
+const mm = 25.4 / 72 / S.s;
+
+const filtered = S.regions.map((r, i) => ({ r, i })).filter(({ r }) => {
+if(r.manual) return true;
+if(S.filter === 'text') return r.isText;
+if(S.filter === 'line') return !r.isText;
+return true;
+}).sort((a, b) => (b.r.manual ? 1 : 0) - (a.r.manual ? 1 : 0));
+
+filtered.slice(0, 400).forEach(({ r, i }) => {
+const li = document.createElement('li'); li.className = 'change-card'; li.dataset.i = i; li.tabIndex = 0;
+if(i === S.sel) li.setAttribute('aria-current', 'true');
+const no = document.createElement('span'); no.className = 'change-num'; no.textContent = String(i + 1);
+const tx = document.createElement('div'); tx.className = 'change-text';
+const d = r.first;
+if(r.manual){ const n = document.createElement('b'); n.textContent = '✏ Mây tự tạo'; n.style.color = 'var(--cloud-color)'; tx.appendChild(n); }
+else if(!d){ const e = document.createElement('em'); e.textContent = 'Thay đổi nét vẽ'; tx.appendChild(e); }
+else if(d.type === 'changed' && d.a.s === d.b.s){ const n = document.createElement('b'); n.textContent = d.b.s; const e = document.createElement('em'); e.textContent = ' (dịch chuyển)'; tx.append(n, e); }
+else if(d.type === 'changed'){ const o = document.createElement('s'); o.textContent = d.a.s; const n = document.createElement('b'); n.textContent = d.b.s; tx.append(o, ' → ', n); }
+else if(d.type === 'added'){ const n = document.createElement('b'); n.textContent = '+ ' + d.b.s; tx.appendChild(n); }
+else { const o = document.createElement('s'); o.textContent = d.a.s; tx.appendChild(o); }
+if(r.more){ const e = document.createElement('em'); e.textContent = ' +' + r.more + ' ghi chú'; tx.appendChild(e); }
+
+const pos = document.createElement('div'); pos.className = 'change-coord';
+pos.innerHTML = `<span>X: ${fmtInt((r.x + r.w / 2) * mm)} · Y: ${fmtInt((r.y + r.h / 2) * mm)} mm</span><span>${r.manual ? '' : r.n + ' px'}</span>`;
+const eb = document.createElement('button'); eb.type = 'button'; eb.className = 'note-edit'; eb.title = 'Thêm / sửa ghi chú';
+eb.textContent = r.note ? '✎ Sửa ghi chú' : '✎ Ghi chú';
+eb.addEventListener('click', e => { e.stopPropagation(); startNoteEdit(i); });
+pos.appendChild(eb);
+const right = document.createElement('div'); right.style.minWidth = '0'; right.append(tx, pos);
+if(i === S.editing){
+const inp = document.createElement('input'); inp.className = 'note-input'; inp.value = r.note || ''; inp.placeholder = 'Nhập ghi chú, Enter để lưu, Esc để bỏ';
+const save = () => { if(S.editing !== i) return; r.note = inp.value.trim(); S.editing = -1; renderList(); renderClouds(); };
+inp.addEventListener('keydown', e => {
+e.stopPropagation();
+if(e.key === 'Enter'){ e.preventDefault(); save(); }
+else if(e.key === 'Escape'){ e.preventDefault(); S.editing = -1; renderList(); }
+});
+inp.addEventListener('blur', save);
+inp.addEventListener('click', e => e.stopPropagation());
+right.appendChild(inp);
+setTimeout(() => { inp.focus(); inp.select(); }, 0);
+} else if(r.note){
+const nd = document.createElement('div'); nd.className = 'change-note'; nd.textContent = '📝 ' + r.note; right.appendChild(nd);
+}
+li.append(no, right);
+
+li.addEventListener('click', () => selectChange(i, true));
+li.addEventListener('keydown', e => {
+if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectChange(i, true); }
+else if(e.key === 'Delete' || e.key === 'Backspace'){ e.preventDefault(); S.sel = i; removeCloud(); }
+});
+ul.appendChild(li);
+});
+
+document.getElementById('chgCount').textContent = S.regions.length ? `(${S.regions.length})` : '';
+const note = document.getElementById('listNote');
+if(!S.started) note.textContent = 'Danh sách thay đổi sẽ hiện sau khi nhấn So sánh.';
+else if(!S.regions.length) note.textContent = S.removed.length ? 'Đã xóa tất cả mây. Nhấn ↶ để khôi phục.' : 'Không có sai khác nào giữa 2 bản vẽ.';
+else note.textContent = 'Nhấn vào mục để phóng to vùng đó. Phím Delete để xóa mây.';
+}
+
+function selectChange(i, zoom){
+S.sel = i;
+document.querySelectorAll('#changeList .change-card').forEach(el => {
+if(+el.dataset.i === i){ el.setAttribute('aria-current', 'true'); el.scrollIntoView({ block:'nearest', behavior:'smooth' }); }
+else el.removeAttribute('aria-current');
+});
+const r = S.regions[i]; if(!r) return;
+if(zoom){
+const b = document.getElementById('viewport').getBoundingClientRect(), odd = V.r % 2;
+const ww = Math.max(1, odd ? r.h : r.w), hh = Math.max(1, odd ? r.w : r.h);
+const k = clamp(Math.min(b.width / ww, b.height / hh) * 0.5, V.fit * 2, 22);
+centerOn(r.x + r.w / 2, r.y + r.h / 2, k);
+}
+renderClouds();
+}
+
+let cloudK = 0, cloudR = 0, cloudRaf = 0;
+function updCloudUI(){
+const b = document.getElementById('uncloudBtn'), u = document.getElementById('uncloudUndo');
+if(!b || !u) return;
+b.disabled = !(S.ready && S.sel >= 0 && S.regions[S.sel]);
+u.hidden = !S.removed.length;
+}
+
+function removeCloud(){
+if(!S.ready || S.sel < 0 || !S.regions[S.sel]) return;
+const i = S.sel, r = S.regions.splice(i, 1)[0];
+if(r.manual){ const l = manualList(), j = l.indexOf(r); if(j >= 0) l.splice(j, 1); }
+S.removed.push({ r, i }); S.sel = -1; S.editing = -1;
+renderList(); renderClouds();
+}
+
+function undoRemoveCloud(){
+const o = S.removed.pop(); if(!o) return;
+if(o.r.manual) manualList().push(o.r);
+S.regions.splice(Math.min(o.i, S.regions.length), 0, o.r);
+S.sel = Math.min(o.i, S.regions.length - 1);
+renderList(); renderClouds();
+}
+
+/* Clouds to draw: all when "Hiện mây" is on, user clouds always, the selected one last (on top). */
+function cloudIdx(){
+const idx = [];
+S.regions.forEach((r, i) => { if(i !== S.sel && (r.manual || (S.cloud && idx.length < 800))) idx.push(i); });
+if(S.sel >= 0 && S.regions[S.sel]) idx.push(S.sel);
+return idx;
+}
+const shortNote = t => t.length > 80 ? t.slice(0, 79) + '…' : t;
+
+function renderClouds(){
+const svg = document.getElementById('clouds'); cloudRaf = 0; updCloudUI();
+if(!S.ready){ svg.innerHTML = ''; return; }
+const k = V.k || 1; cloudK = k; cloudR = V.r;
+const idx = cloudIdx();
+
+let out = '';
+for(const i of idx){
+const r = S.regions[i], sel = i === S.sel;
+const pad = 10 / k + 4, x = r.x - pad, y = r.y - pad, w = r.w + 2 * pad, h = r.h + 2 * pad;
+const L = clamp(Math.min(w, h) / 4, 9 / k, 48 / k);
+out += `<path class="cl${sel ? ' sel' : ''}" d="${cloudPath(x, y, w, h, L)}"/>`;
+const fs = 13 / k, tx = x, ty = y - 4 / k;
+out += `<text class="cn" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" font-size="${fs.toFixed(2)}" transform="rotate(${-V.r * 90} ${tx.toFixed(1)} ${ty.toFixed(1)})">${i + 1}</text>`;
+if(r.note){
+const nx = x, ny = y + h + fs * 1.2;
+out += `<text class="cn cnote" x="${nx.toFixed(1)}" y="${ny.toFixed(1)}" font-size="${fs.toFixed(2)}" transform="rotate(${-V.r * 90} ${nx.toFixed(1)} ${ny.toFixed(1)})">${escXml(shortNote(r.note))}</text>`;
+}
+}
+if(S.pin){
+const M = matB(), R = 9 / k, f1 = n => n.toFixed(1);
+const mark = (p, cls, color, n) => {
+const [x, y] = p, tx = x + R * 1.2, ty = y - R * 1.2;
+out += `<circle class="pin ${cls}" cx="${f1(x)}" cy="${f1(y)}" r="${f1(R)}"/>`;
+out += `<path class="pin ${cls}" d="M${f1(x - R * 1.8)} ${f1(y)}H${f1(x + R * 1.8)}M${f1(x)} ${f1(y - R * 1.8)}V${f1(y + R * 1.8)}"/>`;
+out += `<text class="pinT" fill="${color}" x="${f1(tx)}" y="${f1(ty)}" font-size="${(15 / k).toFixed(2)}" transform="rotate(${-V.r * 90} ${f1(tx)} ${f1(ty)})">${n}</text>`;
+};
+S.pin.A.forEach((p, i) => mark(p, 'pinA', PAL.old, 'A' + (i + 1)));
+S.pin.B.forEach((p, i) => mark(matApply(M, p), 'pinB', PAL.nw, 'B' + (i + 1)));
+}
+svg.innerHTML = out;
+}
+
+function scheduleClouds(){ if(!cloudRaf) cloudRaf = requestAnimationFrame(renderClouds); }
+
+let dBusy = false, dPending = false, dTimer = 0;
+function hideDetail(){ document.getElementById('dv').hidden = true; document.getElementById('dstat').textContent = ''; }
+function scheduleDetail(ms){ clearTimeout(dTimer); dTimer = setTimeout(requestDetail, ms == null ? 240 : ms); }
+
+async function requestDetail(){
+if(dBusy){ dPending = true; return; }
+dBusy = true;
+try{ do{ dPending = false; await doDetail(); } while(dPending); }
+catch(err){ console.error(err); document.getElementById('dstat').textContent = ''; }
+finally{ dBusy = false; }
+}
+
+/* T maps the slot's sheet px (at scale S.s) to detail-canvas px. */
+async function drawRegion(sl, T, Wd, Hd){
+const cv = document.createElement('canvas'); cv.width = Wd; cv.height = Hd;
+const ctx = cv.getContext('2d', { willReadFrequently:true });
+ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, Wd, Hd);
+if(sl.kind === 'demo'){ ctx.save(); ctx.setTransform(...T); ctx.scale(S.s, S.s); sl.draw(ctx); ctx.restore(); }
+else await sl.page.render({ canvasContext:ctx, transform:T, viewport:sl.page.getViewport({ scale:S.s }) }).promise;
+return cv;
+}
+
+async function doDetail(){
+if(!S.ready || running || S.mode === 'swipe') return;
+const vp = document.getElementById('viewport'), vw = vp.clientWidth, vh = vp.clientHeight;
+const dpr0 = Math.min(window.devicePixelRatio || 1, 2);
+const dv = document.getElementById('dv');
+if(V.k * dpr0 < 0.9){ dv.hidden = true; document.getElementById('dstat').textContent = ''; return; }
+
+const [ax, ay] = toSheet(0, 0), [bx, by] = toSheet(vw, vh);
+const x0 = Math.max(0, Math.min(ax, bx)), y0 = Math.max(0, Math.min(ay, by));
+const x1 = Math.min(S.W, Math.max(ax, bx)), y1 = Math.min(S.H, Math.max(ay, by));
+if(x1 - x0 < 2 || y1 - y0 < 2) return;
+
+let dpr = dpr0, Wd = 0, Hd = 0;
+for(let i = 0; i < 10; i++){
+Wd = Math.ceil((x1 - x0) * V.k * dpr); Hd = Math.ceil((y1 - y0) * V.k * dpr);
+if(Wd * Hd <= 16e6) break;
+dpr *= 0.8;
+}
+const kd = V.k * dpr, s2 = kd * S.s, mode = S.mode;
+const TA = [kd, 0, 0, kd, -x0 * kd, -y0 * kd], TB = matMul(TA, matB());
+const A = S.slots.A, B = S.slots.B;
+document.getElementById('dstat').textContent = 'Render chi tiết vector…';
+await tick();
+if(dPending) return;
+
+let cvA = null, cvB = null;
+if(mode !== 'B') cvA = await drawRegion(A, TA, Wd, Hd);
+if(dPending) return;
+if(mode !== 'A') cvB = await drawRegion(B, TB, Wd, Hd);
+if(dPending || running) return;
+
+dv.width = Wd; dv.height = Hd;
+const dctx = dv.getContext('2d');
+if(mode === 'A' || mode === 'B') dctx.drawImage(mode === 'A' ? cvA : cvB, 0, 0);
+else {
+const gA = grayOf(cvA, Wd, Hd), gB = grayOf(cvB, Wd, Hd);
+const r = composePixels({ W:Wd, H:Hd, gA, gB, tol:CONFIG.tol, thr:CONFIG.thr, com:CONFIG.com, boost:S.boost, mode, mix:S.mix });
+dctx.putImageData(r.img, 0, 0);
+}
+dv.style.left = x0 + 'px'; dv.style.top = y0 + 'px'; dv.style.width = (x1 - x0) + 'px'; dv.style.height = (y1 - y0) + 'px';
+dv.hidden = false;
+document.getElementById('dstat').textContent = 'Vector nét gốc: 1 px ≈ ' + (25.4 / 72 / s2).toFixed(3) + ' mm';
+}
+
+const V = { k:1, x:0, y:0, r:0, fit:1 };
+const COS = [1, 0, -1, 0], SIN = [0, 1, 0, -1];
+function rot(lx, ly){ return [lx * COS[V.r] - ly * SIN[V.r], lx * SIN[V.r] + ly * COS[V.r]]; }
+function toSheet(sx, sy){
+const dx = (sx - V.x) / V.k, dy = (sy - V.y) / V.k;
+return [dx * COS[V.r] + dy * SIN[V.r], -dx * SIN[V.r] + dy * COS[V.r]];
+}
+
+function applyV(){
+document.getElementById('sheet').style.transform = `translate(${V.x}px,${V.y}px) rotate(${V.r * 90}deg) scale(${V.k})`;
+if(S.ready){
+scheduleDetail(260);
+if(S.mode === 'swipe') updateSwipeClip();
+if(S.cloud || S.sel >= 0 || S.pin){ if(V.r !== cloudR || Math.abs(V.k / cloudK - 1) > 0.1) scheduleClouds(); }
+}
+}
+
+function centerOn(lx, ly, k){
+const r = document.getElementById('viewport').getBoundingClientRect(), [a, b] = rot(lx, ly);
+V.k = k; V.x = r.width / 2 - k * a; V.y = r.height / 2 - k * b; applyV();
+}
+
+function fitScale(){
+const r = document.getElementById('viewport').getBoundingClientRect(), odd = V.r % 2;
+const w = odd ? S.H : S.W, h = odd ? S.W : S.H;
+return Math.min(r.width / w, r.height / h) * 0.98;
+}
+
+function fitView(){
+const r = document.getElementById('viewport').getBoundingClientRect(); if(!S.W || !r.width) return;
+V.fit = fitScale(); centerOn(S.W / 2, S.H / 2, V.fit);
+}
+
+function zoomAt(cx, cy, f){
+const nk = clamp(V.k * f, V.fit * 0.4, 25); f = nk / V.k;
+V.x = cx - (cx - V.x) * f; V.y = cy - (cy - V.y) * f; V.k = nk; applyV();
+}
+
+function rotateView(dir){
+if(!S.ready) return;
+const r = document.getElementById('viewport').getBoundingClientRect(), atFit = V.k <= V.fit * 1.001;
+const [cx, cy] = toSheet(r.width / 2, r.height / 2);
+V.r = (V.r + dir + 4) % 4; V.fit = fitScale();
+if(atFit) fitView(); else centerOn(cx, cy, V.k);
+scheduleClouds();
+}
+
+function setupViewport(){
+const vp = document.getElementById('viewport'), ptr = new Map();
+let last = null, pinch = null, swipeDragging = false, down = null, draft = null;
+
+vp.addEventListener('wheel', e => {
+e.preventDefault(); const r = vp.getBoundingClientRect();
+zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0016)));
+}, { passive:false });
+
+const swipeBar = document.getElementById('swipeBar');
+swipeBar.addEventListener('pointerdown', e => {
+e.stopPropagation(); swipeDragging = true;
+swipeBar.setPointerCapture(e.pointerId);
+});
+swipeBar.addEventListener('pointermove', e => {
+if(!swipeDragging) return;
+const r = vp.getBoundingClientRect();
+S.swipePos = clamp((e.clientX - r.left) / r.width * 100, 0, 100);
+updateSwipeClip();
+});
+const endSwipe = () => { swipeDragging = false; };
+swipeBar.addEventListener('pointerup', endSwipe);
+swipeBar.addEventListener('pointercancel', endSwipe);
+
+vp.addEventListener('pointerdown', e => {
+if(e.target.closest('button') || e.target.closest('.swipe-bar')) return;
+ptr.set(e.pointerId, { x:e.clientX, y:e.clientY });
+if(ptr.size === 1){ last = { x:e.clientX, y:e.clientY }; down = { id:e.pointerId, x:e.clientX, y:e.clientY }; }
+else down = null;
+if(S.drawing && ptr.size === 1){ const r = vp.getBoundingClientRect(); draft = { id:e.pointerId, p0:toSheet(e.clientX - r.left, e.clientY - r.top) }; }
+else draft = null;
+if(ptr.size === 2){
+const [a, b] = [...ptr.values()];
+pinch = { d:Math.hypot(a.x - b.x, a.y - b.y), midX:(a.x + b.x) / 2, midY:(a.y + b.y) / 2 };
+}
+vp.setPointerCapture(e.pointerId); vp.classList.add('grabbing');
+});
+
+/* Pin mode hover: show where a click would snap. */
+vp.addEventListener('pointermove', e => {
+if(!S.pin || ptr.size) return;
+const r = vp.getBoundingClientRect();
+drawSnapMark(e.shiftKey ? null : pinPoint(e.clientX - r.left, e.clientY - r.top, false));
+});
+vp.addEventListener('pointerleave', () => drawSnapMark(null));
+
+vp.addEventListener('pointermove', e => {
+if(!ptr.has(e.pointerId)) return;
+ptr.set(e.pointerId, { x:e.clientX, y:e.clientY });
+if(draft && draft.id === e.pointerId){
+const r = vp.getBoundingClientRect(), p1 = toSheet(e.clientX - r.left, e.clientY - r.top), p0 = draft.p0;
+const x = Math.min(p0[0], p1[0]), y = Math.min(p0[1], p1[1]), w = Math.abs(p1[0] - p0[0]), h = Math.abs(p1[1] - p0[1]);
+draft.p1 = p1;
+document.getElementById('snapMark').innerHTML = w > 0 && h > 0 ? `<path class="draft" d="${cloudPath(x, y, w, h, clamp(Math.min(w, h) / 4, 9 / V.k, 48 / V.k))}"/>` : '';
+} else if(ptr.size === 1 && last){
+V.x += e.clientX - last.x; V.y += e.clientY - last.y;
+last = { x:e.clientX, y:e.clientY }; applyV();
+} else if(ptr.size === 2 && pinch){
+const [a, b] = [...ptr.values()], d = Math.hypot(a.x - b.x, a.y - b.y), r = vp.getBoundingClientRect();
+const midX = (a.x + b.x) / 2, midY = (a.y + b.y) / 2;
+V.x += midX - pinch.midX; V.y += midY - pinch.midY;
+if(pinch.d > 0) zoomAt(midX - r.left, midY - r.top, d / pinch.d);
+pinch = { d, midX, midY };
+}
+});
+
+const end = e => {
+if(draft && draft.id === e.pointerId){
+const d = draft; draft = null; document.getElementById('snapMark').innerHTML = '';
+if(e.type === 'pointerup' && d.p1) addManualCloud(d.p0, d.p1);
+}
+/* A press-and-release without dragging is a pin click. */
+if(e.type === 'pointerup' && S.pin && down && down.id === e.pointerId && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 5){
+const r = vp.getBoundingClientRect(); pinClick(e.clientX - r.left, e.clientY - r.top, e.shiftKey);
+}
+down = null;
+ptr.delete(e.pointerId); last = null; pinch = null;
+if(!ptr.size) vp.classList.remove('grabbing');
+if(ptr.size === 1){ const p = [...ptr.values()][0]; last = { x:p.x, y:p.y }; }
+};
+vp.addEventListener('pointerup', end); vp.addEventListener('pointercancel', end);
+
+const mid = () => { const r = vp.getBoundingClientRect(); return [r.width / 2, r.height / 2]; };
+document.getElementById('zoomInBtn').addEventListener('click', () => zoomAt(...mid(), 1.4));
+document.getElementById('zoomOutBtn').addEventListener('click', () => zoomAt(...mid(), 1 / 1.4));
+document.getElementById('zoomFitBtn').addEventListener('click', fitView);
+document.getElementById('zoom100Btn').addEventListener('click', () => zoomAt(...mid(), 1 / V.k));
+document.getElementById('rotLeftBtn').addEventListener('click', () => rotateView(-1));
+document.getElementById('rotRightBtn').addEventListener('click', () => rotateView(1));
+document.getElementById('pgPrevBtn').addEventListener('click', () => stepPages(-1));
+document.getElementById('pgNextBtn').addEventListener('click', () => stepPages(1));
+window.addEventListener('resize', () => { if(S.ready && V.k <= V.fit * 1.001) fitView(); });
+}
+
+function updDl(){
+const isReady = S.ready;
+document.getElementById('dlPdfBtn').hidden = !(isReady && (S.mode === 'diff' || S.mode === 'overlay'));
+document.getElementById('dlPngBtn').hidden = !isReady;
+const isGAS = typeof google !== 'undefined' && google.script && google.script.run;
+document.getElementById('saveDriveBtn').hidden = !(isReady && isGAS && (S.mode === 'diff' || S.mode === 'overlay'));
+}
+
+async function buildPdf(cv, pw, ph){
+const w = cv.width, h = cv.height;
+let data, filter, cs = '/DeviceRGB';
+try{
+if(!window.CompressionStream) throw new Error('no CompressionStream');
+const d = cv.getContext('2d').getImageData(0, 0, w, h).data, rgb = new Uint8Array(w * h * 3);
+for(let i = 0, j = 0; i < d.length; i += 4){ rgb[j++] = d[i]; rgb[j++] = d[i+1]; rgb[j++] = d[i+2]; }
+const stream = new Blob([rgb]).stream().pipeThrough(new CompressionStream('deflate'));
+data = new Uint8Array(await new Response(stream).arrayBuffer()); filter = '/FlateDecode';
+}catch(e){
+const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.95));
+if(!blob) throw new Error('Không tạo được ảnh');
+data = new Uint8Array(await blob.arrayBuffer()); filter = '/DCTDecode';
+}
+const enc = new TextEncoder(), parts = [], offs = []; let len = 0;
+const push = b => { const u = typeof b === 'string' ? enc.encode(b) : b; parts.push(u); len += u.length; };
+const obj = (n, body) => { offs[n] = len; push(n + ' 0 obj\n' + body + '\nendobj\n'); };
+
+push('%PDF-1.4\n');
+obj(1, '<</Type /Catalog /Pages 2 0 R>>');
+obj(2, '<</Type /Pages /Kids [3 0 R] /Count 1>>');
+obj(3, `<</Type /Page /Parent 2 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources <</XObject <</Im0 4 0 R>>>> /Contents 5 0 R>>`);
+
+offs[4] = len;
+push(`4 0 obj\n<</Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace ${cs} /BitsPerComponent 8 /Filter ${filter} /Length ${data.length}>>\nstream\n`);
+push(data);
+push('\nendstream\nendobj\n');
+
+const content = `q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;
+obj(5, `<</Length ${content.length}>>\nstream\n${content}\nendstream`);
+
+const xref = len;
+let x = 'xref\n0 6\n0000000000 65535 f \n';
+for(let n = 1; n <= 5; n++) x += String(offs[n]).padStart(10, '0') + ' 00000 n \n';
+push(x + `trailer\n<</Size 6 /Root 1 0 R>>\nstartxref\n${xref}\n%%EOF`);
+return new Blob(parts, { type:'application/pdf' });
+}
+
+async function renderExportCanvas(){
+const A = S.slots.A, B = S.slots.B, W = S.W, H = S.H, u = W / 1800, band = Math.round(56 * u);
+const cv = document.createElement('canvas'); cv.width = W; cv.height = H + band;
+const g = cv.getContext('2d');
+g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H + band);
+g.drawImage(document.getElementById('cv'), 0, band);
+
+const sans = '"Plus Jakarta Sans", system-ui, sans-serif';
+const nm = sl => (sl.kind === 'demo' ? 'Bản vẽ Mẫu' : sl.name) + (sl.numPages > 1 ? ` (Trang ${sl.pageNum}/${sl.numPages})` : '');
+const fit = (t, maxW) => { if(g.measureText(t).width <= maxW) return t; while(t.length > 4 && g.measureText(t + '…').width > maxW) t = t.slice(0, -1); return t + '…'; };
+
+g.textBaseline = 'middle'; g.textAlign = 'left'; g.fillStyle = '#0f172a'; g.font = '700 ' + (15 * u) + 'px ' + sans;
+g.fillText(fit('Bản Cũ (A): ' + nm(A), W * 0.48), 12 * u, band * 0.3);
+g.fillText(fit('Bản Mới (B): ' + nm(B), W * 0.48), 12 * u, band * 0.72);
+
+g.textAlign = 'right'; g.fillStyle = '#64748b'; g.font = '600 ' + (12.5 * u) + 'px ' + sans;
+const when = new Date().toLocaleString('vi-VN');
+g.fillText(when + ` · ${S.regions.length} vị trí sai khác` + (S.L ? ' · Căn B theo 3 điểm pin' : (S.dx || S.dy) ? ` · Dịch B: ${S.dx}, ${S.dy} px` : ''), W - 12 * u, band * 0.3);
+
+let lx = W - 12 * u;
+for(const [c, t] of [['#94a3b8', 'Giữ nguyên'], ['#10b981', 'Mới thêm/sửa'], ['#ef4444', 'Chỉ có ở bản cũ']]){
+g.fillStyle = '#64748b'; g.fillText(t, lx, band * 0.72); lx -= g.measureText(t).width + 6 * u;
+g.fillStyle = c; g.fillRect(lx - 14 * u, band * 0.72 - 2 * u, 14 * u, 4 * u); lx -= 24 * u;
+}
+g.fillStyle = '#cbd5e1'; g.fillRect(0, band - u, W, u);
+
+const idx = cloudIdx();
+
+g.save(); g.translate(0, band); g.lineJoin = 'round'; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+for(const i of idx){
+const r = S.regions[i], sel = i === S.sel, pad = 10 * u + 4, x = r.x - pad, y = r.y - pad, w = r.w + 2 * pad, h = r.h + 2 * pad;
+const L = clamp(Math.min(w, h) / 4, 9 * u, 48 * u);
+g.strokeStyle = '#d946ef'; g.lineWidth = (sel ? 3.8 : 2.2) * u; g.stroke(new Path2D(cloudPath(x, y, w, h, L)));
+g.font = '700 ' + (13 * u) + 'px "JetBrains Mono",monospace';
+g.lineWidth = 3 * u; g.strokeStyle = '#ffffff'; g.strokeText(String(i + 1), x, y - 4 * u);
+g.fillStyle = '#d946ef'; g.fillText(String(i + 1), x, y - 4 * u);
+if(r.note){
+const t = shortNote(r.note), ny = y + h + 15 * u;
+g.font = '600 ' + (13 * u) + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+g.lineWidth = 3 * u; g.strokeStyle = '#ffffff'; g.strokeText(t, x, ny);
+g.fillStyle = '#d946ef'; g.fillText(t, x, ny);
+}
+}
+g.restore();
+return { cv, band, W, H };
+}
+
+function getOutputFilename(){
+const A = S.slots.A, B = S.slots.B;
+const clean = n => (n.kind === 'demo' ? 'Sample' : n.name.replace(/\.pdf$/i, '')).replace(/[\\/:*?"<>|]+/g, '_').trim();
+const d = new Date(), p2 = n => String(n).padStart(2, '0');
+const stamp = d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + '-' + p2(d.getHours()) + p2(d.getMinutes());
+return `COMPARE_${clean(A)}_vs_${clean(B)}_${stamp}.pdf`;
+}
+
+async function exportDiffPdf(){
+if(!S.ready) return;
+busy('Đang biên dịch PDF so sánh…'); await tick();
+try{
+const { cv, band, W, H } = await renderExportCanvas();
+const blob = await buildPdf(cv, (W / S.s).toFixed(2), ((H + band) / S.s).toFixed(2));
+const fname = getOutputFilename();
+const url = URL.createObjectURL(blob), a = document.createElement('a');
+a.href = url; a.download = fname; document.body.appendChild(a); a.click(); a.remove();
+setTimeout(() => URL.revokeObjectURL(url), 30000);
+busy(false); showToast('Đã tải xuống: ' + fname);
+}catch(err){
+console.error(err); busy(false); showToast('Lỗi xuất PDF: ' + (err && err.message || err));
+}
+}
+
+async function savePdfToGoogleDrive(){
+if(!S.ready) return;
+if(typeof google === 'undefined' || !google.script || !google.script.run){
+showToast('Tính năng này chỉ chạy trên Google Apps Script.'); return;
+}
+busy('Đang lưu tệp vào Google Drive, thư mục PQD…'); await tick();
+try{
+const { cv, band, W, H } = await renderExportCanvas();
+const blob = await buildPdf(cv, (W / S.s).toFixed(2), ((H + band) / S.s).toFixed(2));
+const fname = getOutputFilename();
+
+const reader = new FileReader();
+reader.onloadend = function(){
+const base64data = reader.result.split(',')[1];
+google.script.run
+.withSuccessHandler(function(res){
+busy(false);
+if(res && res.success){
+/* window.open after an async callback is often popup-blocked; tell the user where the file is instead. */
+const w = window.open(res.fileUrl, '_blank');
+showToast(w ? 'Đã lưu vào Google Drive, thư mục PQD.' : 'Đã lưu "' + res.fileName + '" vào Drive, thư mục "PQD Drawing Comparisons".');
+} else {
+showToast('Lỗi lưu Drive: ' + (res ? res.error : 'Không rõ'));
+}
+})
+.withFailureHandler(function(err){
+busy(false);
+showToast('Lỗi Apps Script: ' + err);
+})
+.saveComparisonToDrive(base64data, fname);
+};
+reader.onerror = function(){ busy(false); showToast('Lỗi đọc tệp PDF để tải lên Drive'); };
+reader.readAsDataURL(blob);
+}catch(err){
+console.error(err); busy(false); showToast('Lỗi: ' + (err && err.message || err));
+}
+}
+
+async function exportDiffPng(){
+if(!S.ready) return;
+busy('Đang xuất ảnh PNG…'); await tick();
+try{
+const cv = document.getElementById('cv');
+cv.toBlob(blob => {
+if(!blob){ busy(false); showToast('Lỗi: ảnh quá lớn, không xuất được PNG'); return; }
+const url = URL.createObjectURL(blob), a = document.createElement('a');
+a.href = url; a.download = `COMPARE_EXPORT_${Date.now()}.png`;
+document.body.appendChild(a); a.click(); a.remove();
+setTimeout(() => URL.revokeObjectURL(url), 30000);
+busy(false); showToast('Đã lưu ảnh PNG.');
+}, 'image/png');
+}catch(err){ busy(false); showToast('Lỗi: ' + err.message); }
+}
+
+function showToast(msg){
+const t = document.getElementById('toastBox'); t.textContent = msg; t.classList.add('show');
+clearTimeout(showToast.t); showToast.t = setTimeout(() => t.classList.remove('show'), 4200);
+}
+
+function busy(msg){
+const b = document.getElementById('busyState'); if(!msg){ b.hidden = true; return; }
+document.getElementById('busyMessage').textContent = msg; b.hidden = false;
+}
+
+function showEmpty(){
+busy(false);
+const A = S.slots.A, B = S.slots.B, both = A && B;
+const tT = document.getElementById('emptyTitle'), tS = document.getElementById('emptySub');
+document.getElementById('startSampleBtn').textContent = both ? '⚡ So sánh ngay' : '✨ Thử với bản vẽ mẫu tầng 25';
+if(both){
+tT.textContent = 'Đã có đủ 2 bản vẽ';
+tS.textContent = 'Nhấn nút "So sánh ngay" để phát hiện sai khác nét vẽ và văn bản.';
+} else if(!A && !B){
+tT.textContent = 'Chọn 2 bản vẽ PDF để bắt đầu';
+tS.textContent = 'Kéo thả 2 tệp PDF vào đây hoặc chọn từ bảng bên trái.';
+} else {
+tT.textContent = 'Chọn tiếp bản vẽ ' + (A ? 'Mới (B)' : 'Cũ (A)');
+tS.textContent = 'Kéo thả tệp PDF còn lại vào đây hoặc chọn từ thanh bên trái.';
+}
+document.getElementById('emptyState').hidden = false;
+document.getElementById('sheet').style.visibility = 'hidden';
+document.getElementById('clouds').innerHTML = '';
+document.getElementById('swipeBar').style.display = 'none';
+hideDetail(); updDl();
+}
+
+function updateFlow(){
+const A = S.slots.A, B = S.slots.B;
+document.getElementById('flowBox').hidden = !(A || B);
+document.getElementById('goBtn').disabled = !(A && B);
+if(!S.started) showEmpty();
+}
+
+function slotHTML(k){
+const el = document.getElementById('slot' + k);
+el.querySelector('input').addEventListener('change', e => {
+if(e.target.files[0]) pickFiles(e.target.files, k);
+e.target.value = '';
+});
+el.querySelector('select').addEventListener('change', e => changePage(k, +e.target.value));
+el.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); el.classList.add('drag'); });
+el.addEventListener('dragleave', () => el.classList.remove('drag'));
+el.addEventListener('drop', e => {
+e.preventDefault(); e.stopPropagation(); el.classList.remove('drag');
+document.getElementById('dropHint').hidden = true;
+pickFiles(e.dataTransfer.files, k);
+});
+}
+
+function renderSlots(){
+for(const k of ['A', 'B']){
+const sl = S.slots[k], el = document.getElementById('slot' + k);
+const fn = el.querySelector('.file-name'), fi = el.querySelector('.file-meta'), sel = el.querySelector('select');
+if(!sl){
+fn.textContent = 'Kéo thả tệp PDF vào đây'; fi.textContent = '';
+sel.hidden = true; el.classList.remove('has-file'); el.classList.add('is-empty'); continue;
+}
+el.classList.add('has-file'); el.classList.remove('is-empty');
+fn.textContent = sl.kind === 'demo' ? (k === 'A' ? 'Bản vẽ Mẫu (Rev A)' : 'Bản vẽ Mẫu (Rev B)') : sl.name;
+fi.textContent = sl.sizeBytes ? `${(sl.sizeBytes / 1024 / 1024).toFixed(2)} MB · ${sl.wPt} × ${sl.hPt} pt` : `${sl.wPt} × ${sl.hPt} pt`;
+if(sl.numPages > 1){
+sel.hidden = false; sel.innerHTML = '';
+for(let i = 1; i <= sl.numPages; i++){
+const o = document.createElement('option'); o.value = i; o.textContent = `Trang ${i}/${sl.numPages}`;
+sel.appendChild(o);
+}
+sel.value = sl.pageNum;
+} else sel.hidden = true;
+}
+renderPageNav();
+}
+
+/* ---- Endpoint snap: vector endpoints of the current page, in page units (scale 1) ---- */
+const SNAP_CELL = 8, SNAP_MAX = 3e6, SNAP_PX = 14;
+
+function buildSnapIndex(xs, ys){
+const grid = new Map();
+for(let i = 0; i < xs.length; i++){
+const key = Math.floor(xs[i] / SNAP_CELL) * 65536 + Math.floor(ys[i] / SNAP_CELL);
+let l = grid.get(key); if(!l){ l = []; grid.set(key, l); } l.push(i);
+}
+return { xs, ys, grid };
+}
+
+async function ensureSnap(sl){
+if(!sl || sl.snap) return;
+const xs = [], ys = [];
+if(sl.kind === 'demo'){
+const add = (x, y) => { xs.push(x); ys.push(y); };
+const rec = { moveTo:add, lineTo:add, strokeRect:(x, y, w, h) => { add(x, y); add(x + w, y); add(x, y + h); add(x + w, y + h); } };
+sl.draw(new Proxy({}, { get:(t, k) => rec[k] || (() => {}), set:() => true }));
+} else {
+const O = pdfjsLib.OPS, ol = await sl.page.getOperatorList();
+const VT = sl.page.getViewport({ scale:1 }).transform, stack = [];
+let ctm = [1, 0, 0, 1, 0, 0], full = VT;
+const add = (x, y) => { if(xs.length < SNAP_MAX){ const p = matApply(full, [x, y]); xs.push(p[0]); ys.push(p[1]); } };
+const setCtm = m => { ctm = m; full = matMul(VT, ctm); };
+for(let i = 0; i < ol.fnArray.length; i++){
+const fn = ol.fnArray[i], a = ol.argsArray[i];
+if(fn === O.save) stack.push(ctm);
+else if(fn === O.restore){ if(stack.length) setCtm(stack.pop()); }
+else if(fn === O.transform) setCtm(matMul(ctm, a));
+else if(fn === O.paintFormXObjectBegin){ stack.push(ctm); if(a[0]) setCtm(matMul(ctm, a[0])); }
+else if(fn === O.paintFormXObjectEnd){ if(stack.length) setCtm(stack.pop()); }
+else if(fn === O.constructPath){
+const ops = a[0], c = a[1]; let j = 0;
+for(const op of ops){
+if(op === O.moveTo || op === O.lineTo){ add(c[j], c[j+1]); j += 2; }
+else if(op === O.curveTo){ add(c[j+4], c[j+5]); j += 6; }
+else if(op === O.curveTo2 || op === O.curveTo3){ add(c[j+2], c[j+3]); j += 4; }
+else if(op === O.rectangle){ const [x, y, w, h] = [c[j], c[j+1], c[j+2], c[j+3]]; add(x, y); add(x + w, y); add(x, y + h); add(x + w, y + h); j += 4; }
+}
+}
+}
+}
+sl.snap = buildSnapIndex(Float32Array.from(xs), Float32Array.from(ys));
+}
+
+/* Nearest endpoint to sheet-px point q within r sheet px; returns sheet px or null. */
+function snapFind(sl, q, r){
+const sn = sl && sl.snap; if(!sn || !sn.xs.length) return null;
+const s = S.s, ux = q[0] / s, uy = q[1] / s, ur = r / s;
+if(ur > SNAP_CELL * 40) return null; /* zoomed out too far for a precise pick */
+let best = ur * ur, bi = -1;
+const gx0 = Math.floor((ux - ur) / SNAP_CELL), gx1 = Math.floor((ux + ur) / SNAP_CELL);
+const gy0 = Math.floor((uy - ur) / SNAP_CELL), gy1 = Math.floor((uy + ur) / SNAP_CELL);
+for(let gx = gx0; gx <= gx1; gx++) for(let gy = gy0; gy <= gy1; gy++){
+const l = sn.grid.get(gx * 65536 + gy); if(!l) continue;
+for(const i of l){ const dx = sn.xs[i] - ux, dy = sn.ys[i] - uy, d = dx * dx + dy * dy; if(d < best){ best = d; bi = i; } }
+}
+return bi < 0 ? null : [sn.xs[bi] * s, sn.ys[bi] * s];
+}
+
+/* Screen point -> pin point in the active slot's own sheet space (snapped unless noSnap), plus where to draw it. */
+function pinPoint(sx, sy, noSnap){
+const onA = S.pin.A.length < 3, p = toSheet(sx, sy), M = matB();
+const q = onA ? p : matApply(matInv(M), p);
+const hit = noSnap ? null : snapFind(onA ? S.slots.A : S.slots.B, q, SNAP_PX / V.k / (onA ? 1 : Math.hypot(M[0], M[1])));
+const pt = hit || q;
+return { onA, pt, snapped:!!hit, disp:onA ? pt : matApply(M, pt) };
+}
+
+function drawSnapMark(r){
+const svg = document.getElementById('snapMark');
+if(!r || !r.snapped){ svg.innerHTML = ''; return; }
+const k = V.k || 1, h = 7 / k, [x, y] = r.disp, f1 = n => n.toFixed(2);
+svg.innerHTML = `<rect x="${f1(x - h)}" y="${f1(y - h)}" width="${f1(2 * h)}" height="${f1(2 * h)}" fill="none" stroke="#f59e0b" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+}
+
+function updPinUI(){
+const P = S.pin, h = document.getElementById('pinHint');
+if(!P) drawSnapMark(null);
+document.getElementById('viewport').classList.toggle('pinning', !!P);
+document.getElementById('pinBtn').textContent = P ? '✕ Hủy pin' : '📌 Căn bằng 3 điểm pin';
+h.hidden = !P && !S.L;
+if(P){
+const onA = P.A.length < 3, n = (onA ? P.A : P.B).length + 1;
+h.textContent = `Nhấn chọn điểm ${n}/3 trên ${onA ? 'BẢN CŨ (A)' : 'BẢN MỚI (B)'}, đúng thứ tự 1-2-3. Ô vàng = bắt điểm đầu mút nét (giữ Shift để tắt). Kéo để di chuyển · Backspace: bỏ điểm vừa chọn · Esc: hủy.`;
+} else if(S.L) h.textContent = 'Bản mới đang căn theo 3 điểm pin. Nhấn "Về 0" để bỏ.';
+}
+
+async function startPin(){
+if(S.pin){ cancelPin(); return; }
+if(!S.ready){ showToast('Nhấn So sánh trước khi pin.'); return; }
+if(S.drawing) setDrawing(false);
+busy('Đang đọc điểm đầu mút nét vẽ…'); await tick();
+for(const sl of [S.slots.A, S.slots.B]){
+try{ await ensureSnap(sl); }
+catch(err){ console.error(err); sl.snap = buildSnapIndex(new Float32Array(0), new Float32Array(0)); showToast('Không đọc được nét vector — pin không có bắt điểm.'); }
+}
+busy(false);
+S.pin = { prev:S.mode, A:[], B:[] }; setMode('A'); updPinUI(); renderClouds();
+}
+
+function cancelPin(){
+if(!S.pin) return;
+const prev = S.pin.prev; S.pin = null; setMode(prev); updPinUI(); renderClouds();
+}
+
+function undoPin(){
+const P = S.pin;
+if(P.B.length) P.B.pop();
+else if(P.A.length){ P.A.pop(); if(P.A.length === 2) setMode('A'); }
+updPinUI(); renderClouds();
+}
+
+/* A points are picked in A sheet space; B points are clicked on B as currently drawn, then mapped back to B's own space. */
+function pinClick(sx, sy, noSnap){
+const P = S.pin, r = pinPoint(sx, sy, noSnap);
+drawSnapMark(null);
+if(r.onA){ P.A.push(r.pt); if(P.A.length === 3) setMode('B'); }
+else {
+P.B.push(r.pt);
+if(P.B.length === 3){
+const M = solveAffine(P.B, P.A);
+if(!M || !solveAffine(P.A, P.B)){
+showToast('3 điểm gần thẳng hàng — chọn lại 3 điểm cách xa nhau.');
+P.A = []; P.B = []; setMode('A'); updPinUI(); renderClouds(); return;
+}
+S.L = M.slice(0, 4); S.dx = M[4]; S.dy = M[5];
+const prev = P.prev; S.pin = null;
+updOff(); setMode(prev); updPinUI(); request(1);
+showToast('Đã căn bản mới theo 3 điểm pin.'); return;
+}
+}
+updPinUI(); renderClouds();
+}
+
+function updOff(){
+const r1 = n => Math.round(n * 10) / 10;
+let t = `${r1(S.dx)}, ${r1(S.dy)} px`;
+if(S.L) t += ` · ${(Math.atan2(S.L[1], S.L[0]) * 180 / Math.PI).toFixed(2)}° · ×${Math.hypot(S.L[0], S.L[1]).toFixed(4)}`;
+document.getElementById('offO').textContent = t;
+updPinUI();
+}
+function nudge(a, b){ if(!S.ready) return; S.dx += a; S.dy += b; updOff(); request(1); }
+
+function bindNudge(btn){
+const [a, b] = btn.dataset.d.split(',').map(Number);
+let t, iv;
+const step = () => nudge(a * S.nstep, b * S.nstep), stop = () => { clearTimeout(t); clearInterval(iv); };
+btn.addEventListener('pointerdown', e => { e.preventDefault(); step(); t = setTimeout(() => { iv = setInterval(step, 80); }, 320); });
+['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
+}
+
+function autoAlign(){
+if(!S.ready){ showToast('Nhấn So sánh trước khi tự căn chỉnh.'); return; }
+busy('Đang nhận diện dịch chuyển tự động…');
+setTimeout(() => {
+try{
+const W = S.W, H = S.H, g = S.gA, thr = CONFIG.thr;
+const pts = []; const step = Math.max(1, Math.floor(Math.sqrt(W * H / 60000)));
+for(let y = 0; y < H; y += step) for(let x = 0; x < W; x += step) if(g[y * W + x] < thr) pts.push(x, y);
+const n = pts.length / 2;
+if(n < 50){ busy(false); showToast('Không đủ nét vẽ tham chiếu để căn chỉnh.'); return; }
+
+const ib = new Uint8Array(W * H), g0 = S.gB0;
+for(let i = 0; i < ib.length; i++) ib[i] = g0[i] < thr ? 1 : 0;
+const d2 = boxDilate(ib, W, H, 2);
+const score = (dx, dy) => {
+let c = 0;
+for(let i = 0; i < pts.length; i += 2){
+const x = pts[i] - dx, y = pts[i+1] - dy;
+if(x >= 0 && y >= 0 && x < W && y < H) c += d2[y * W + x];
+}
+return c;
+};
+const base = score(0, 0); let best = base, bx = 0, by = 0;
+for(let dy = -60; dy <= 60; dy += 4) for(let dx = -60; dx <= 60; dx += 4){
+const s = score(dx, dy); if(s > best){ best = s; bx = dx; by = dy; }
+}
+let cx = bx, cy = by;
+for(let dy = cy - 4; dy <= cy + 4; dy++) for(let dx = cx - 4; dx <= cx + 4; dx++){
+const s = score(dx, dy); if(s > best){ best = s; bx = dx; by = dy; }
+}
+if(best <= base * 1.01){ bx = 0; by = 0; }
+S.dx = bx; S.dy = by; S.L = null; updOff();
+showToast(bx || by ? `Tự động dịch bản vẽ mới: ${bx}, ${by} px.` : 'Hai bản vẽ đã trùng khớp vị trí.');
+busy(false); request(1);
+}catch(err){ busy(false); showToast('Không thể khớp: ' + err.message); }
+}, 40);
+}
+
+function startCompare(){
+if(!S.slots.A || !S.slots.B) return;
+S.started = true; S.refit = true; S.dx = 0; S.dy = 0; S.L = null; V.r = 0; S.sel = -1; updOff();
+document.getElementById('emptyState').hidden = true; request(0);
+}
+
+function resetAll(){
+S.started = false; S.ready = false; S.refit = false; S.fitted = false;
+dropDoc(S.slots.A); dropDoc(S.slots.B); S.pin = null; S.manual = {}; S.editing = -1; setDrawing(false);
+S.slots.A = null; S.slots.B = null; S.dx = 0; S.dy = 0; S.L = null; S.sel = -1;
+S.regions = []; S.removed = []; S.textDiffs = []; S.masks = null; S.stats = null;
+S.cvA = S.cvB = S.gA = S.gB0 = S.gB = S.inkA = S.inkB = S.dilA = S.dilB = S.img = null;
+V.r = 0; V.k = 1; V.fit = 1; V.x = 0; V.y = 0; pending = null;
+const cv = document.getElementById('cv'); cv.width = 1; cv.height = 1;
+S.mode = 'diff';
+document.querySelectorAll('#modeGroup button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.mode === 'diff')));
+document.getElementById('mixWrap').hidden = true;
+document.getElementById('swipeBar').style.display = 'none';
+updOff(); renderSlots(); renderList();
+document.getElementById('mainStatus').innerHTML = '';
+updateFlow(); updDl();
+}
+
+function bindControls(){
+const bo = document.getElementById('boost'), bout = document.getElementById('boostO');
+const updB = () => { S.boost = +bo.value; bout.textContent = S.boost ? (`+${S.boost} px`) : 'Tắt'; };
+updB();
+bo.addEventListener('input', () => { updB(); if(S.ready) request(3); });
+
+document.getElementById('mixSlider').addEventListener('input', e => { S.mix = +e.target.value; if(S.ready) request(3); });
+document.getElementById('res').addEventListener('change', e => {
+S.maxPx = +e.target.value; S.dx = 0; S.dy = 0; S.L = null; updOff();
+if(S.started){ S.refit = true; request(0); }
+});
+document.getElementById('nstep').addEventListener('change', e => { S.nstep = +e.target.value; });
+document.querySelectorAll('#nudgeGrid button').forEach(bindNudge);
+document.getElementById('autoAlignBtn').addEventListener('click', autoAlign);
+document.getElementById('pinBtn').addEventListener('click', startPin);
+document.getElementById('zeroAlignBtn').addEventListener('click', () => { if(!S.ready) return; S.dx = 0; S.dy = 0; S.L = null; updOff(); request(1); });
+
+document.getElementById('cloudBtn').addEventListener('click', e => {
+S.cloud = !S.cloud; e.currentTarget.setAttribute('aria-pressed', String(S.cloud)); renderClouds();
+});
+document.getElementById('drawBtn').addEventListener('click', () => setDrawing(!S.drawing));
+document.getElementById('uncloudBtn').addEventListener('click', removeCloud);
+document.getElementById('uncloudUndo').addEventListener('click', undoRemoveCloud);
+document.getElementById('dlPdfBtn').addEventListener('click', exportDiffPdf);
+document.getElementById('dlPngBtn').addEventListener('click', exportDiffPng);
+document.getElementById('saveDriveBtn').addEventListener('click', savePdfToGoogleDrive);
+
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+const ws = document.getElementById('workspace');
+ws.classList.toggle('sidebar-collapsed');
+setTimeout(() => { if(S.ready) fitView(); }, 260);
+});
+
+document.getElementById('modeGroup').addEventListener('click', e => {
+const b = e.target.closest('button'); if(!b) return;
+setMode(b.dataset.mode);
+});
+
+document.querySelector('.filter-pills').addEventListener('click', e => {
+const b = e.target.closest('button'); if(!b) return;
+document.querySelectorAll('.filter-pills button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+S.filter = b.dataset.filter; renderList();
+});
+
+document.getElementById('swapBtn').addEventListener('click', () => {
+const a = S.slots.A, b = S.slots.B; S.slots.A = b; S.slots.B = a; S.manual = {};
+if(a) a.k = 'B'; if(b) b.k = 'A';
+S.dx = 0; S.dy = 0; S.L = null; updOff(); renderSlots();
+if(S.started) request(0); else updateFlow();
+});
+
+document.getElementById('goBtn').addEventListener('click', startCompare);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+document.getElementById('startSampleBtn').addEventListener('click', () => {
+if(S.slots.A && S.slots.B){ startCompare(); return; }
+dropDoc(S.slots.A); dropDoc(S.slots.B); S.manual = {};
+S.slots.A = makeDemo('A'); S.slots.B = makeDemo('B');
+renderSlots(); updateFlow(); startCompare();
+});
+
+let depth = 0;
+window.addEventListener('dragenter', e => {
+if(e.dataTransfer && [...e.dataTransfer.types].includes('Files')){ depth++; document.getElementById('dropHint').hidden = false; }
+});
+window.addEventListener('dragleave', () => { depth = Math.max(0, depth - 1); if(!depth) document.getElementById('dropHint').hidden = true; });
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => {
+e.preventDefault(); depth = 0; document.getElementById('dropHint').hidden = true;
+if(e.dataTransfer.files.length) pickFiles(e.dataTransfer.files, null);
+});
+
+document.getElementById('themeBtn').addEventListener('click', () => {
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+});
+
+window.addEventListener('keydown', e => {
+if(e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+if(S.drawing && e.key === 'Escape'){ setDrawing(false); return; }
+if(S.pin && (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete')){
+e.preventDefault(); if(e.key === 'Escape') cancelPin(); else undoPin(); return;
+}
+if(e.key === 'PageUp' || e.key === 'PageDown'){ e.preventDefault(); stepPages(e.key === 'PageDown' ? 1 : -1); return; }
+if(!S.ready) return;
+
+if(e.key === ' '){
+e.preventDefault(); setMode(S.mode === 'diff' ? 'overlay' : 'diff');
+} else if(e.key === '1'){ setMode('diff'); }
+else if(e.key === '2'){ setMode('overlay'); }
+else if(e.key === '3'){ setMode('swipe'); }
+else if(e.key === '4'){ setMode('A'); }
+else if(e.key === '5'){ setMode('B'); }
+else if(e.key === '+' || e.key === '='){ document.getElementById('zoomInBtn').click(); }
+else if(e.key === '-' || e.key === '_'){ document.getElementById('zoomOutBtn').click(); }
+else if(e.key === '0'){ fitView(); }
+else if(e.key === 'r' || e.key === 'R'){ rotateView(1); }
+else if(e.key === 'Delete' || e.key === 'Backspace'){ removeCloud(); }
+else if((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')){ undoRemoveCloud(); }
+else if(e.key === 'ArrowUp'){ e.preventDefault(); nudge(0, -S.nstep); }
+else if(e.key === 'ArrowDown'){ e.preventDefault(); nudge(0, S.nstep); }
+else if(e.key === 'ArrowLeft'){ e.preventDefault(); nudge(-S.nstep, 0); }
+else if(e.key === 'ArrowRight'){ e.preventDefault(); nudge(S.nstep, 0); }
+});
+}
+
+function setMode(mode){
+S.mode = mode;
+document.querySelectorAll('#modeGroup button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.mode === mode)));
+document.getElementById('mixWrap').hidden = S.mode !== 'overlay';
+document.getElementById('swipeBar').style.display = S.mode === 'swipe' ? 'block' : 'none';
+updDl();
+if(S.ready) request(3);
+}
+
+if(window.pdfjsLib){
+try{
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https:/' + '/cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}catch(e){
+pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+}
+}
+
+slotHTML('A'); slotHTML('B');
+bindControls(); setupViewport(); updOff();
+renderSlots(); renderList(); updateFlow();
+</script>
+</body>
+</html>
